@@ -1,0 +1,16 @@
+## Interface: 11507
+## Title: Portal Inviter by Illusion
+## Notes: Friendly Mage portal assistant forked from PortalInviter.
+## Author: Illusion aka Romainjava; original by m1kas
+## Version: 1.0.0
+## SavedVariables: PortalInviterByIllusionDB, PortalInviterDB
+
+testmessages.lua
+PortalInviter.lua
+PortalInviter_Income.lua
+PortalInviter_UI_Tutorial.lua
+PortalInviter_UI_Options.lua
+PortalInviter_UI_Minimap.lua
+PortalInviter_UI_Queue.lua
+PortalInviter_UI_Income.lua
+PortalInviter_SlashCommands.lua
