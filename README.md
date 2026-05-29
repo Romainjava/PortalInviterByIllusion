@@ -86,8 +86,6 @@ Use `/port check <message>` when a request does not behave as expected. It shows
 
 Install the addon folder into your WoW AddOns directory, then reload the game.
 
-For CurseForge packaging, the folder can be named `PortalInviterByIllusion` to avoid colliding with the original addon. This repository includes both `PortalInviter.toc` for the current local folder and `PortalInviterByIllusion.toc` for conflict-free packaging. Sound paths are resolved dynamically from the loaded addon folder name.
-
 The fork stores settings in `PortalInviterByIllusionDB`. If an old `PortalInviterDB` saved variable is present, it is used once as the initial data source so existing settings and income history can carry over.
 
 ## Credits
