@@ -1,0 +1,13 @@
+Portal Inviter by Illusion
+
+This project is a fork of PortalInviter by m1kas, published on CurseForge
+under the MIT License.
+
+Original project: PortalInviter
+Original author: m1kas
+CurseForge Project ID: 1517650
+Fork maintainer: Illusion aka Romainjava
+
+This fork keeps the original attribution and extends the addon with broader
+portal request matching, friendlier customer whispers, localized-client portal
+spell support, and open-source project documentation.
