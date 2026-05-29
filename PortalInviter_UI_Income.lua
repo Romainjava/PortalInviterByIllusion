@@ -1,5 +1,5 @@
 -- Income window: Log / Stats / Settings tabs.
--- Pure UI — all data model / stats helpers live in PortalInviter_Income.lua.
+-- Pure UI: all data model / stats helpers live in PortalInviter_Income.lua.
 
 local ADDON_NAME, PI = ...
 
@@ -35,8 +35,8 @@ local RANGE_SCOPE = {
 local incomeFrame
 local ShowIncomeFrame  -- forward declared
 
-StaticPopupDialogs["PORTALINVITER_RESET_INCOME"] = {
-    text         = "Really delete all PortalInviter income history for this character?",
+StaticPopupDialogs["PORTALINVITERBYILLUSION_RESET_INCOME"] = {
+    text         = "Really delete all Portal Inviter by Illusion income history for this character?",
     button1      = "Delete",
     button2      = "Cancel",
     OnAccept     = function()
@@ -60,11 +60,11 @@ local function FormatRangeLabel(rangeKey, summary)
 end
 
 -- Persistent, per-account UI state (frame geometry, scale). Kept in the top
--- level PortalInviterDB so it survives across characters.
+-- level PortalInviterByIllusionDB so it survives across characters.
 local function GetUIDB()
-    if type(PortalInviterDB) ~= "table" then return nil end
-    if type(PortalInviterDB.ui) ~= "table" then PortalInviterDB.ui = {} end
-    local ui = PortalInviterDB.ui
+    if type(PortalInviterByIllusionDB) ~= "table" then return nil end
+    if type(PortalInviterByIllusionDB.ui) ~= "table" then PortalInviterByIllusionDB.ui = {} end
+    local ui = PortalInviterByIllusionDB.ui
     if type(ui.frame) ~= "table" then ui.frame = {} end
     return ui
 end
@@ -103,7 +103,7 @@ local function CreateIncomeFrame()
 
     local ui = GetUIDB() or { frame = {} }
 
-    local f = CreateFrame("Frame", "PortalInviterIncomeFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+    local f = CreateFrame("Frame", "PortalInviterByIllusionIncomeFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
     local savedW = tonumber(ui.frame.w) or 780
     local savedH = tonumber(ui.frame.h) or 520
     if savedW < 680 then savedW = 680 end
@@ -160,7 +160,7 @@ local function CreateIncomeFrame()
 
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", 16, -14)
-    title:SetText("|cff69ccf0PortalInviter|r — Income")
+    title:SetText("|cff69ccf0Portal Inviter by Illusion|r - Income")
 
     local closeBtn = CreateFrame("Button", nil, f, "UIPanelCloseButton")
     closeBtn:SetPoint("TOPRIGHT", -2, -2)
@@ -231,7 +231,7 @@ local function CreateIncomeFrame()
     end
 
     for i, name in ipairs(TAB_DEFS) do
-        local btn = CreateFrame("Button", "PortalInviterIncomeTab" .. i, f, "UIPanelButtonTemplate")
+        local btn = CreateFrame("Button", "PortalInviterByIllusionIncomeTab" .. i, f, "UIPanelButtonTemplate")
         btn:SetSize(70, 22)
         btn:SetText(name)
         if i == 1 then
@@ -268,7 +268,7 @@ local function CreateIncomeFrame()
     searchLabel:SetPoint("LEFT", 2, 0)
     searchLabel:SetText("Search:")
 
-    local searchBox = CreateFrame("EditBox", "PortalInviterLogSearch", filterBar, "InputBoxTemplate")
+    local searchBox = CreateFrame("EditBox", "PortalInviterByIllusionLogSearch", filterBar, "InputBoxTemplate")
     searchBox:SetSize(140, 20)
     searchBox:SetPoint("LEFT", searchLabel, "RIGHT", 8, 0)
     searchBox:SetAutoFocus(false)
@@ -278,14 +278,14 @@ local function CreateIncomeFrame()
     destLabel:SetPoint("LEFT", searchBox, "RIGHT", 12, 0)
     destLabel:SetText("Destination:")
 
-    local destFilter = CreateFrame("Frame", "PortalInviterLogDestFilter", filterBar, "UIDropDownMenuTemplate")
+    local destFilter = CreateFrame("Frame", "PortalInviterByIllusionLogDestFilter", filterBar, "UIDropDownMenuTemplate")
     destFilter:SetPoint("LEFT", destLabel, "RIGHT", -6, -2)
 
     local rangeLabelLog = filterBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     rangeLabelLog:SetPoint("LEFT", destFilter, "RIGHT", 0, 2)
     rangeLabelLog:SetText("Range:")
 
-    local rangeFilter = CreateFrame("Frame", "PortalInviterLogRangeFilter", filterBar, "UIDropDownMenuTemplate")
+    local rangeFilter = CreateFrame("Frame", "PortalInviterByIllusionLogRangeFilter", filterBar, "UIDropDownMenuTemplate")
     rangeFilter:SetPoint("LEFT", rangeLabelLog, "RIGHT", -6, -2)
 
     local clearFilterBtn = CreateFrame("Button", nil, filterBar, "UIPanelButtonTemplate")
@@ -363,7 +363,7 @@ local function CreateIncomeFrame()
         return math.max(4, math.floor(h / ROW_HEIGHT))
     end
 
-    local scrollFrame = CreateFrame("ScrollFrame", "PortalInviterIncomeLogScroll", logPage, "FauxScrollFrameTemplate")
+    local scrollFrame = CreateFrame("ScrollFrame", "PortalInviterByIllusionIncomeLogScroll", logPage, "FauxScrollFrameTemplate")
     scrollFrame:SetPoint("TOPLEFT", 0, -52)
     scrollFrame:SetPoint("BOTTOMRIGHT", -24, 16)
 
@@ -387,7 +387,7 @@ local function CreateIncomeFrame()
         if not entry then return end
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine("PortalInviter", 0.4, 0.8, 1)
+        GameTooltip:AddLine("Portal Inviter by Illusion", 0.4, 0.8, 1)
         GameTooltip:AddLine(" ")
         GameTooltip:AddDoubleLine("Time",        date("%Y-%m-%d %H:%M:%S", entry.t or 0), 1, 1, 1, 1, 1, 1)
         GameTooltip:AddDoubleLine("Player",      entry.player or "?",                    1, 1, 1, 1, 1, 1)
@@ -729,7 +729,7 @@ local function CreateIncomeFrame()
     rangeLabel:SetPoint("TOPLEFT", 0, -24)
     rangeLabel:SetText("Range:")
 
-    rangeDropdown = CreateFrame("Frame", "PortalInviterIncomeRange", rightCol, "UIDropDownMenuTemplate")
+    rangeDropdown = CreateFrame("Frame", "PortalInviterByIllusionIncomeRange", rightCol, "UIDropDownMenuTemplate")
     rangeDropdown:SetPoint("TOPLEFT", 44, -18)
 
     -- Three stat tiles for the selected range (Total / Trades / Avg per trade).
@@ -784,7 +784,7 @@ local function CreateIncomeFrame()
     DestHeaderLabel("Share",       280, -1,  "LEFT")  -- grows with table width
 
     -- Scrollable destination list
-    local destScroll = CreateFrame("ScrollFrame", "PortalInviterIncomeDestScroll", rightCol, "FauxScrollFrameTemplate")
+    local destScroll = CreateFrame("ScrollFrame", "PortalInviterByIllusionIncomeDestScroll", rightCol, "FauxScrollFrameTemplate")
     destScroll:SetPoint("TOPLEFT", 0, -154)
     destScroll:SetPoint("BOTTOMRIGHT", -24, 96)
 
@@ -1225,7 +1225,7 @@ local function CreateIncomeFrame()
     detailLogBtn:SetPoint("TOPRIGHT", 0, 0)
     detailLogBtn:SetText("View in Log")
 
-    local detailRangeDropdown = CreateFrame("Frame", "PortalInviterDetailRangeDropdown", detailPage, "UIDropDownMenuTemplate")
+    local detailRangeDropdown = CreateFrame("Frame", "PortalInviterByIllusionDetailRangeDropdown", detailPage, "UIDropDownMenuTemplate")
     detailRangeDropdown:SetPoint("RIGHT", detailLogBtn, "LEFT", -4, -3)
 
     local detailRangeLabel = detailPage:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -1239,7 +1239,7 @@ local function CreateIncomeFrame()
     detailSep:SetColorTexture(0.4, 0.6, 0.9, 0.3)
 
     -- Scrollable content area (everything below the header scrolls) --
-    local detailScroll = CreateFrame("ScrollFrame", "PortalInviterDetailScroll", detailPage, "UIPanelScrollFrameTemplate")
+    local detailScroll = CreateFrame("ScrollFrame", "PortalInviterByIllusionDetailScroll", detailPage, "UIPanelScrollFrameTemplate")
     detailScroll:SetPoint("TOPLEFT",     detailPage, "TOPLEFT",      0, -32)
     detailScroll:SetPoint("BOTTOMRIGHT", detailPage, "BOTTOMRIGHT", -24, 0)
 
@@ -1866,7 +1866,7 @@ local function CreateIncomeFrame()
     resetBtn:SetPoint("TOPLEFT", 0, -50)
     resetBtn:SetText("Reset all income data")
     resetBtn:SetScript("OnClick", function()
-        StaticPopup_Show("PORTALINVITER_RESET_INCOME")
+        StaticPopup_Show("PORTALINVITERBYILLUSION_RESET_INCOME")
     end)
 
     local exportBtn = CreateFrame("Button", nil, settingsPage, "UIPanelButtonTemplate")
@@ -1878,7 +1878,7 @@ local function CreateIncomeFrame()
     local exportFrame
     local function ShowExportFrame()
         if not exportFrame then
-            exportFrame = CreateFrame("Frame", "PortalInviterExportFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+            exportFrame = CreateFrame("Frame", "PortalInviterByIllusionExportFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
             exportFrame:SetSize(520, 360)
             exportFrame:SetPoint("CENTER")
             exportFrame:SetFrameStrata("DIALOG")
@@ -1898,18 +1898,18 @@ local function CreateIncomeFrame()
             end
             local t = exportFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
             t:SetPoint("TOPLEFT", 16, -14)
-            t:SetText("|cff69ccf0PortalInviter|r — CSV Export")
+            t:SetText("|cff69ccf0Portal Inviter by Illusion|r - CSV Export")
             local close = CreateFrame("Button", nil, exportFrame, "UIPanelCloseButton")
             close:SetPoint("TOPRIGHT", -2, -2)
             local hint = exportFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
             hint:SetPoint("TOPLEFT", 16, -40)
             hint:SetText("|cffaaaaaaPress Ctrl+A then Ctrl+C to copy.|r")
 
-            local scroll = CreateFrame("ScrollFrame", "PortalInviterExportScroll", exportFrame, "UIPanelScrollFrameTemplate")
+            local scroll = CreateFrame("ScrollFrame", "PortalInviterByIllusionExportScroll", exportFrame, "UIPanelScrollFrameTemplate")
             scroll:SetPoint("TOPLEFT", 16, -60)
             scroll:SetPoint("BOTTOMRIGHT", -32, 16)
 
-            local edit = CreateFrame("EditBox", "PortalInviterExportBox", scroll)
+            local edit = CreateFrame("EditBox", "PortalInviterByIllusionExportBox", scroll)
             edit:SetMultiLine(true)
             edit:SetFontObject(ChatFontNormal)
             edit:SetAutoFocus(true)
@@ -1918,7 +1918,7 @@ local function CreateIncomeFrame()
             scroll:SetScrollChild(edit)
             exportFrame.edit = edit
             exportFrame:SetScript("OnHide", function() f:Show() end)
-            table.insert(UISpecialFrames, "PortalInviterExportFrame")
+            table.insert(UISpecialFrames, "PortalInviterByIllusionExportFrame")
         end
         local text = BuildTradesCSV()
         exportFrame.edit:SetText(text)
@@ -2014,7 +2014,7 @@ local function CreateIncomeFrame()
     end)
 
     -- ESC close
-    table.insert(UISpecialFrames, "PortalInviterIncomeFrame")
+    table.insert(UISpecialFrames, "PortalInviterByIllusionIncomeFrame")
 
     incomeFrame = f
     SetActiveTab(1)

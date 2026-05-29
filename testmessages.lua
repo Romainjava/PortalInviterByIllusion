@@ -1,4 +1,4 @@
-PortalInviterTestMessages = {
+PortalInviterByIllusionTestMessages = {
     -- Alliance destinations
     { message = "wtb port to shat", shouldMatch = true, destination = "Shattrath" },
     { message = "WTB port shat", shouldMatch = true, destination = "Shattrath" },

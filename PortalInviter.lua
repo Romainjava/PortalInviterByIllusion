@@ -1,4 +1,4 @@
--- PortalInviter — engine-only main file.
+-- Portal Inviter by Illusion - engine-only main file.
 --
 -- Hot path (chat -> match -> invite) is entirely file-local: no cross-module
 -- dispatch is involved when evaluating a chat message. UI/income/tutorial/
@@ -6,6 +6,8 @@
 -- events (clicks, slash commands, trade events) through the shared PI table.
 
 local ADDON_NAME, PI = ...
+local ADDON_TITLE = "Portal Inviter by Illusion"
+local ADDON_FOLDER = ADDON_NAME or "PortalInviter"
 
 local frame = CreateFrame("Frame")
 local portalSpellNames = {}
@@ -80,18 +82,18 @@ local DEFAULT_JOIN_WHISPER_MESSAGE = "Hey %player%, I'm marked with a star. I'll
 local DEFAULT_UNKNOWN_DESTINATION_WHISPER_MESSAGE = "Hey %player%, I'm marked with a star. Which portal do you need?"
 local DEFAULT_ALREADY_GROUPED_WHISPER_MESSAGE = "I can invite you for the portal when you're free - just whisper me again."
 local DESTINATION_SOUNDS = {
-    ["unknown"]      = "Interface\\AddOns\\PortalInviter\\Sound\\Destination.ogg",
-    ["Stormwind"]    = "Interface\\AddOns\\PortalInviter\\Sound\\Stormwind.ogg",
-    ["Ironforge"]    = "Interface\\AddOns\\PortalInviter\\Sound\\Ironforge.ogg",
-    ["Darnassus"]    = "Interface\\AddOns\\PortalInviter\\Sound\\Darnassus.ogg",
-    ["Exodar"]       = "Interface\\AddOns\\PortalInviter\\Sound\\Exodar.ogg",
-    ["Theramore"]    = "Interface\\AddOns\\PortalInviter\\Sound\\Theramore.ogg",
-    ["Orgrimmar"]    = "Interface\\AddOns\\PortalInviter\\Sound\\Orgrimmar.ogg",
-    ["Undercity"]    = "Interface\\AddOns\\PortalInviter\\Sound\\Undercity.ogg",
-    ["Thunder Bluff"] = "Interface\\AddOns\\PortalInviter\\Sound\\Thunderbluff.ogg",
-    ["Silvermoon"]   = "Interface\\AddOns\\PortalInviter\\Sound\\Silvermoon.ogg",
-    ["Stonard"]      = "Interface\\AddOns\\PortalInviter\\Sound\\Stonard.ogg",
-    ["Shattrath"]    = "Interface\\AddOns\\PortalInviter\\Sound\\Shattrath.ogg",
+    ["unknown"]      = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Destination.ogg",
+    ["Stormwind"]    = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Stormwind.ogg",
+    ["Ironforge"]    = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Ironforge.ogg",
+    ["Darnassus"]    = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Darnassus.ogg",
+    ["Exodar"]       = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Exodar.ogg",
+    ["Theramore"]    = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Theramore.ogg",
+    ["Orgrimmar"]    = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Orgrimmar.ogg",
+    ["Undercity"]    = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Undercity.ogg",
+    ["Thunder Bluff"] = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Thunderbluff.ogg",
+    ["Silvermoon"]   = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Silvermoon.ogg",
+    ["Stonard"]      = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Stonard.ogg",
+    ["Shattrath"]    = "Interface\\AddOns\\" .. ADDON_FOLDER .. "\\Sound\\Shattrath.ogg",
 }
 local CAPITAL_CITY_ZONES = {
     ["Stormwind City"]  = true,
@@ -298,11 +300,11 @@ local function GetDestinations()
 end
 
 local function Print(message)
-    print(string.format("|cff69ccf0%s|r: %s", ADDON_NAME or "PortalInviter", message))
+    print(string.format("|cff69ccf0%s|r: %s", ADDON_TITLE, message))
 end
 
 local function DebugPrint(fmt, ...)
-    if not PortalInviterDB or not PortalInviterDB.debugEnabled then
+    if not PortalInviterByIllusionDB or not PortalInviterByIllusionDB.debugEnabled then
         return
     end
 
@@ -314,55 +316,59 @@ local function DebugPrint(fmt, ...)
 end
 
 local function EnsureDB()
-    if type(PortalInviterDB) ~= "table" then
-        PortalInviterDB = {}
-    end
-
-    if PortalInviterDB.userEnabled == nil then
-        if PortalInviterDB.enabled == nil then
-            PortalInviterDB.userEnabled = false
+    if type(PortalInviterByIllusionDB) ~= "table" then
+        if type(PortalInviterDB) == "table" then
+            PortalInviterByIllusionDB = PortalInviterDB
         else
-            PortalInviterDB.userEnabled = PortalInviterDB.enabled and true or false
+            PortalInviterByIllusionDB = {}
         end
     end
 
-    if type(PortalInviterDB.minimapAngle) ~= "number" then
-        PortalInviterDB.minimapAngle = 220
+    if PortalInviterByIllusionDB.userEnabled == nil then
+        if PortalInviterByIllusionDB.enabled == nil then
+            PortalInviterByIllusionDB.userEnabled = false
+        else
+            PortalInviterByIllusionDB.userEnabled = PortalInviterByIllusionDB.enabled and true or false
+        end
     end
 
-    if PortalInviterDB.soundMuted == nil then
-        PortalInviterDB.soundMuted = false
+    if type(PortalInviterByIllusionDB.minimapAngle) ~= "number" then
+        PortalInviterByIllusionDB.minimapAngle = 220
     end
 
-    if PortalInviterDB.debugEnabled == nil then
-        PortalInviterDB.debugEnabled = false
+    if PortalInviterByIllusionDB.soundMuted == nil then
+        PortalInviterByIllusionDB.soundMuted = false
     end
 
-    if PortalInviterDB.autoMode == nil then
-        PortalInviterDB.autoMode = false
+    if PortalInviterByIllusionDB.debugEnabled == nil then
+        PortalInviterByIllusionDB.debugEnabled = false
     end
 
-    if PortalInviterDB.autoWhisperMessage == nil then
-        PortalInviterDB.autoWhisperMessage = DEFAULT_ALREADY_GROUPED_WHISPER_MESSAGE
+    if PortalInviterByIllusionDB.autoMode == nil then
+        PortalInviterByIllusionDB.autoMode = false
     end
 
-    if PortalInviterDB.joinWhisperMessage == nil then
-        PortalInviterDB.joinWhisperMessage = DEFAULT_JOIN_WHISPER_MESSAGE
+    if PortalInviterByIllusionDB.autoWhisperMessage == nil then
+        PortalInviterByIllusionDB.autoWhisperMessage = DEFAULT_ALREADY_GROUPED_WHISPER_MESSAGE
     end
 
-    if PortalInviterDB.unknownDestinationWhisperMessage == nil then
-        PortalInviterDB.unknownDestinationWhisperMessage = DEFAULT_UNKNOWN_DESTINATION_WHISPER_MESSAGE
+    if PortalInviterByIllusionDB.joinWhisperMessage == nil then
+        PortalInviterByIllusionDB.joinWhisperMessage = DEFAULT_JOIN_WHISPER_MESSAGE
     end
 
-    if PortalInviterDB.announcePortalCasts == nil then
-        PortalInviterDB.announcePortalCasts = true
+    if PortalInviterByIllusionDB.unknownDestinationWhisperMessage == nil then
+        PortalInviterByIllusionDB.unknownDestinationWhisperMessage = DEFAULT_UNKNOWN_DESTINATION_WHISPER_MESSAGE
     end
 
-    if type(PortalInviterDB.characters) ~= "table" then
-        PortalInviterDB.characters = {}
+    if PortalInviterByIllusionDB.announcePortalCasts == nil then
+        PortalInviterByIllusionDB.announcePortalCasts = true
     end
 
-    PortalInviterDB.enabled = PortalInviterDB.userEnabled and true or false
+    if type(PortalInviterByIllusionDB.characters) ~= "table" then
+        PortalInviterByIllusionDB.characters = {}
+    end
+
+    PortalInviterByIllusionDB.enabled = PortalInviterByIllusionDB.userEnabled and true or false
 end
 
 local function GetCharKey()
@@ -374,18 +380,18 @@ local function GetCharKey()
 end
 
 local function GetCharDB()
-    if type(PortalInviterDB) ~= "table" or type(PortalInviterDB.characters) ~= "table" then
+    if type(PortalInviterByIllusionDB) ~= "table" or type(PortalInviterByIllusionDB.characters) ~= "table" then
         return nil
     end
     local key = GetCharKey()
     if not key then return nil end
-    local entry = PortalInviterDB.characters[key]
+    local entry = PortalInviterByIllusionDB.characters[key]
     if type(entry) ~= "table" then
         entry = {
             version = 1,
             trades  = {},
         }
-        PortalInviterDB.characters[key] = entry
+        PortalInviterByIllusionDB.characters[key] = entry
     else
         if type(entry.trades) ~= "table"  then entry.trades = {} end
         if type(entry.version) ~= "number" then entry.version = 1 end
@@ -1054,7 +1060,7 @@ local function AnnouncePortalCast()
         end
     end
 
-    if not PortalInviterDB.announcePortalCasts then return end
+    if not PortalInviterByIllusionDB.announcePortalCasts then return end
 
     local channel
     if IsInRaid() then
@@ -1191,7 +1197,7 @@ local function ResolveBNWhisperTarget(sender, ...)
 end
 
 local function PlayInviteAlert()
-    if PortalInviterDB.soundMuted then
+    if PortalInviterByIllusionDB.soundMuted then
         return
     end
 
@@ -1203,7 +1209,7 @@ local function PlayInviteAlert()
 end
 
 local function PlayDestinationSound(destination)
-    if PortalInviterDB.soundMuted then
+    if PortalInviterByIllusionDB.soundMuted then
         return
     end
 
@@ -1214,46 +1220,46 @@ local function PlayDestinationSound(destination)
 end
 
 local function SetSoundMuted(isMuted)
-    PortalInviterDB.soundMuted = isMuted and true or false
-    Print(PortalInviterDB.soundMuted
+    PortalInviterByIllusionDB.soundMuted = isMuted and true or false
+    Print(PortalInviterByIllusionDB.soundMuted
         and "|cffff8800Sound muted.|r No invite alerts or city name cues. Middle-click minimap icon to unmute."
         or  "|cff00ff00Sound enabled.|r Playing invite alerts and city name cues. Middle-click minimap icon to mute.")
 end
 
 local function ToggleSoundMuted()
-    SetSoundMuted(not PortalInviterDB.soundMuted)
+    SetSoundMuted(not PortalInviterByIllusionDB.soundMuted)
 end
 
 local function SetDebugEnabled(enabled)
-    PortalInviterDB.debugEnabled = enabled and true or false
-    Print(PortalInviterDB.debugEnabled
+    PortalInviterByIllusionDB.debugEnabled = enabled and true or false
+    Print(PortalInviterByIllusionDB.debugEnabled
         and "|cff00ff00Debug logging enabled.|r /port debug to disable."
         or  "|cffff6060Debug logging disabled.|r")
 end
 
 local function ToggleDebugEnabled()
-    SetDebugEnabled(not PortalInviterDB.debugEnabled)
+    SetDebugEnabled(not PortalInviterByIllusionDB.debugEnabled)
 end
 
 local function SetEnabled(enabled)
-    PortalInviterDB.userEnabled = enabled and true or false
-    PortalInviterDB.enabled = PortalInviterDB.userEnabled
+    PortalInviterByIllusionDB.userEnabled = enabled and true or false
+    PortalInviterByIllusionDB.enabled = PortalInviterByIllusionDB.userEnabled
     if PI.RefreshMinimapState then PI.RefreshMinimapState() end
-    if PortalInviterDB.enabled then
-        local msg = "|cff00ff00Portal Inviter enabled.|r Sending automated invites."
-        if PortalInviterDB.autoMode then
+    if PortalInviterByIllusionDB.enabled then
+        local msg = "|cff00ff00Portal Inviter by Illusion enabled.|r Sending automated invites."
+        if PortalInviterByIllusionDB.autoMode then
             msg = msg .. " (Auto-mode: only when in a capital city)"
         else
             msg = msg .. " Left-click minimap icon to disable."
         end
         Print(msg)
     else
-        Print("|cffff6060Portal Inviter disabled.|r No longer sending invites. Left-click minimap icon to re-enable.")
+        Print("|cffff6060Portal Inviter by Illusion disabled.|r No longer sending invites. Left-click minimap icon to re-enable.")
     end
 end
 
 local function ToggleEnabled()
-    SetEnabled(not PortalInviterDB.enabled)
+    SetEnabled(not PortalInviterByIllusionDB.enabled)
 end
 
 local function IsInCapitalCity()
@@ -1268,11 +1274,11 @@ local function IsInCapitalCity()
 end
 
 local function ApplyAutoModeZoneCheck()
-    if not PortalInviterDB.autoMode then return end
+    if not PortalInviterByIllusionDB.autoMode then return end
     local inCity = IsInCapitalCity()
-    if PortalInviterDB.enabled ~= inCity then
-        PortalInviterDB.enabled     = inCity
-        PortalInviterDB.userEnabled = inCity
+    if PortalInviterByIllusionDB.enabled ~= inCity then
+        PortalInviterByIllusionDB.enabled     = inCity
+        PortalInviterByIllusionDB.userEnabled = inCity
         if PI.RefreshMinimapState then PI.RefreshMinimapState() end
         if inCity then
             Print("|cff00ff00Auto mode:|r Entered capital city. Now sending invites.")
@@ -1283,16 +1289,16 @@ local function ApplyAutoModeZoneCheck()
 end
 
 local function SetAutoMode(enabled)
-    PortalInviterDB.autoMode = enabled and true or false
+    PortalInviterByIllusionDB.autoMode = enabled and true or false
     if PI.RefreshMinimapState then PI.RefreshMinimapState() end
-    Print(PortalInviterDB.autoMode
+    Print(PortalInviterByIllusionDB.autoMode
         and "|cff00ff00Auto mode enabled.|r Sending invites only while in a capital city. Shift+Left-click minimap icon to disable."
         or  "|cffff6060Auto mode disabled.|r Invites stay on/off until you toggle manually.")
     ApplyAutoModeZoneCheck()
 end
 
 local function ToggleAutoMode()
-    SetAutoMode(not PortalInviterDB.autoMode)
+    SetAutoMode(not PortalInviterByIllusionDB.autoMode)
 end
 
 local function IsSupportedChannel(channelName, channelNumber, channelBaseName)
@@ -1365,7 +1371,7 @@ end
 
 local function HandlePotentialCustomer(event, message, sender, languageName, channelName, target, flags, unknown, channelNumber, channelBaseName)
     -- Fast bail: skip everything if disabled or not a mage
-    if not PortalInviterDB.enabled then return end
+    if not PortalInviterByIllusionDB.enabled then return end
     if not IsMage() then return end
 
     -- Silently drop unsupported channels before any debug output
@@ -1391,7 +1397,7 @@ local function HandlePotentialCustomer(event, message, sender, languageName, cha
     end
 
     if not canInviteCached then
-        if PortalInviterDB.debugEnabled then
+        if PortalInviterByIllusionDB.debugEnabled then
             DebugPrint("Ignoring %s from %s because you are not the current group leader.",
                 event or "?", sender or "unknown")
         end
@@ -1419,7 +1425,7 @@ local function HandlePotentialCustomer(event, message, sender, languageName, cha
         end
     end
 
-    local debugEnabled = PortalInviterDB.debugEnabled
+    local debugEnabled = PortalInviterByIllusionDB.debugEnabled
     local eventLabel
     if debugEnabled then
         eventLabel = GetEventLabel(event, channelName, channelNumber, channelBaseName)
@@ -1578,7 +1584,7 @@ local function HandleInviteFailedWhisper(errorMessage)
 
     local pendingDestination = pendingDestinations[normalizedCaptured]
     local whisperMsg = FormatCustomerMessage(
-        PortalInviterDB.autoWhisperMessage,
+        PortalInviterByIllusionDB.autoWhisperMessage,
         entry.target,
         pendingDestination and pendingDestination.destination)
     if not whisperMsg or whisperMsg == "" then
@@ -1825,8 +1831,8 @@ local function HandleGroupJoins()
 
                 local whisperTarget = entry.target or displayName or normalizedName
                 local joinTemplate = destination and destination ~= "unknown"
-                    and PortalInviterDB.joinWhisperMessage
-                    or PortalInviterDB.unknownDestinationWhisperMessage
+                    and PortalInviterByIllusionDB.joinWhisperMessage
+                    or PortalInviterByIllusionDB.unknownDestinationWhisperMessage
                 WhisperCustomer(whisperTarget,
                     FormatCustomerMessage(joinTemplate, whisperTarget, destination))
 
@@ -1898,8 +1904,9 @@ frame:SetScript("OnEvent", function(_, event, ...)
         cachedDestinations = BuildDestinations()
         RefreshPortalSpellNames()
 
-        SLASH_PORTALINVITER1 = "/port"
-        SlashCmdList.PORTALINVITER = PI.HandleSlashCommand
+        SLASH_PORTALINVITERBYILLUSION1 = "/port"
+        SLASH_PORTALINVITERBYILLUSION2 = "/pibi"
+        SlashCmdList.PORTALINVITERBYILLUSION = PI.HandleSlashCommand
         if PI.CreateMinimapButton then PI.CreateMinimapButton() end
         if PI.RefreshMinimapState then PI.RefreshMinimapState() end
         if PI.CreateOptionsPanel then PI.CreateOptionsPanel() end
@@ -1908,8 +1915,8 @@ frame:SetScript("OnEvent", function(_, event, ...)
         RefreshCanInvite()
         UpdateQueueState()
         if PI.PruneOldTrades then PI.PruneOldTrades() end
-        if PortalInviterDB.enabled then
-            if PortalInviterDB.autoMode then
+        if PortalInviterByIllusionDB.enabled then
+            if PortalInviterByIllusionDB.autoMode then
                 Print("Loaded. |cff00ff00Auto mode active|r, sending invites in capital cities.")
             else
                 Print("Loaded. |cff00ff00Sending automated invites.|r Left-click minimap icon to disable.")
@@ -1921,8 +1928,8 @@ frame:SetScript("OnEvent", function(_, event, ...)
     end
 
     if event == "PLAYER_LOGOUT" then
-        if type(PortalInviterDB) == "table" and not PortalInviterDB.autoMode then
-            PortalInviterDB.userEnabled = PortalInviterDB.enabled and true or false
+        if type(PortalInviterByIllusionDB) == "table" and not PortalInviterByIllusionDB.autoMode then
+            PortalInviterByIllusionDB.userEnabled = PortalInviterByIllusionDB.enabled and true or false
         end
         return
     end

@@ -1,9 +1,9 @@
 ## Interface: 11507
-## Title: PortalInviter
-## Notes: Auto-invites portal customers when a Mage leader enables it.
-## Author: m1kas
-## Version: 1.7.0
-## SavedVariables: PortalInviterDB
+## Title: Portal Inviter by Illusion
+## Notes: Friendly Mage portal assistant forked from PortalInviter.
+## Author: Illusion aka Romainjava; original by m1kas
+## Version: 1.0.0
+## SavedVariables: PortalInviterByIllusionDB, PortalInviterDB
 
 testmessages.lua
 PortalInviter.lua

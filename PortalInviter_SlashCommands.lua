@@ -29,14 +29,14 @@ local function PrintIncomeRange(rangeKey, label)
 end
 
 local function RunSelfTest()
-    if type(PortalInviterTestMessages) ~= "table" or #PortalInviterTestMessages == 0 then
+    if type(PortalInviterByIllusionTestMessages) ~= "table" or #PortalInviterByIllusionTestMessages == 0 then
         Print("No test messages found.")
         return
     end
 
     local passCount = 0
 
-    for index, testCase in ipairs(PortalInviterTestMessages) do
+    for index, testCase in ipairs(PortalInviterByIllusionTestMessages) do
         local didMatch, destination = PI.EvaluateMessage(testCase.message)
         local expectedDestination = testCase.destination
         -- "any" is a wildcard the fixture uses for messages that match on
@@ -61,7 +61,7 @@ local function RunSelfTest()
         end
     end
 
-    Print(string.format("Self-test complete: %d/%d passed.", passCount, #PortalInviterTestMessages))
+    Print(string.format("Self-test complete: %d/%d passed.", passCount, #PortalInviterByIllusionTestMessages))
 end
 
 -- Seeds a handful of fake queue tickets so the queue UI (and its cast buttons)
@@ -162,11 +162,11 @@ local function HandleSlashCommand(message)
     end
 
     if command == "status" then
-        Print("Auto-invite is " .. (PortalInviterDB.enabled and "ON." or "OFF."))
-        Print("Auto mode is " .. (PortalInviterDB.autoMode and "ON." or "OFF."))
+        Print("Auto-invite is " .. (PortalInviterByIllusionDB.enabled and "ON." or "OFF."))
+        Print("Auto mode is " .. (PortalInviterByIllusionDB.autoMode and "ON." or "OFF."))
         Print("Queue block is " .. (PI.IsInMatchmakingQueue() and "|cffff0000ACTIVE|r (queued for BG, arena, or dungeon finder)." or "inactive."))
-        Print("Invite alert sound is " .. (PortalInviterDB.soundMuted and "MUTED." or "ON."))
-        Print("Debug logging is " .. (PortalInviterDB.debugEnabled and "ON." or "OFF."))
+        Print("Invite alert sound is " .. (PortalInviterByIllusionDB.soundMuted and "MUTED." or "ON."))
+        Print("Debug logging is " .. (PortalInviterByIllusionDB.debugEnabled and "ON." or "OFF."))
         return
     end
 

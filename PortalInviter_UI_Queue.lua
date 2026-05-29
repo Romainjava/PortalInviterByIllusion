@@ -25,16 +25,16 @@ local rowPool = {}
 -- Saved state
 -- ---------------------------------------------------------------------------
 local function GetQueueUIDB()
-    if type(PortalInviterDB) ~= "table" then return nil end
-    if type(PortalInviterDB.ui) ~= "table" then PortalInviterDB.ui = {} end
-    if type(PortalInviterDB.ui.queueFrame) ~= "table" then
-        PortalInviterDB.ui.queueFrame = {
+    if type(PortalInviterByIllusionDB) ~= "table" then return nil end
+    if type(PortalInviterByIllusionDB.ui) ~= "table" then PortalInviterByIllusionDB.ui = {} end
+    if type(PortalInviterByIllusionDB.ui.queueFrame) ~= "table" then
+        PortalInviterByIllusionDB.ui.queueFrame = {
             expanded  = {},
             minimized = {},
             lastState = "expanded",  -- "expanded" | "minimized"
         }
     end
-    local q = PortalInviterDB.ui.queueFrame
+    local q = PortalInviterByIllusionDB.ui.queueFrame
     if type(q.expanded)  ~= "table" then q.expanded  = {} end
     if type(q.minimized) ~= "table" then q.minimized = {} end
     if q.lastState ~= "expanded" and q.lastState ~= "minimized" then
@@ -46,7 +46,7 @@ end
 -- ---------------------------------------------------------------------------
 -- Close-confirmation popup
 -- ---------------------------------------------------------------------------
-StaticPopupDialogs["PORTALINVITER_QUEUE_CLOSE_CONFIRM"] = {
+StaticPopupDialogs["PORTALINVITERBYILLUSION_QUEUE_CLOSE_CONFIRM"] = {
     text         = "Close the Portal Queue?\nPending tickets will be dismissed.",
     button1      = "Close",
     button2      = "Cancel",
@@ -209,7 +209,7 @@ local function SaveMinimizedGeometry()
 end
 
 local function CreateExpandedFrame()
-    local f = CreateFrame("Frame", "PortalInviterQueueFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+    local f = CreateFrame("Frame", "PortalInviterByIllusionQueueFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
     f:SetSize(FRAME_WIDTH, PADDING_TOP + SCROLL_VIEWPORT_HEIGHT + PADDING_BOTTOM)
     f:SetFrameStrata("MEDIUM")
     f:SetClampedToScreen(true)
@@ -254,7 +254,7 @@ local function CreateExpandedFrame()
     closeBtn:SetPoint("TOPRIGHT", 2, 2)
     closeBtn:SetFrameLevel(titleBar:GetFrameLevel() + 5)
     closeBtn:SetScript("OnClick", function()
-        StaticPopup_Show("PORTALINVITER_QUEUE_CLOSE_CONFIRM")
+        StaticPopup_Show("PORTALINVITERBYILLUSION_QUEUE_CLOSE_CONFIRM")
     end)
 
     -- Minimize button
@@ -316,7 +316,7 @@ local MINIMIZED_HEIGHT = 34
 local MINIMIZED_WIDTH  = 200
 
 local function CreateMinimizedFrame()
-    local f = CreateFrame("Frame", "PortalInviterQueueMini", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+    local f = CreateFrame("Frame", "PortalInviterByIllusionQueueMini", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
     f:SetSize(MINIMIZED_WIDTH, MINIMIZED_HEIGHT)
     f:SetFrameStrata("MEDIUM")
     f:SetClampedToScreen(true)
@@ -368,7 +368,7 @@ local function CreateMinimizedFrame()
     closeBtn:SetPoint("TOPRIGHT", 2, 2)
     closeBtn:SetFrameLevel(titleBar:GetFrameLevel() + 5)
     closeBtn:SetScript("OnClick", function()
-        StaticPopup_Show("PORTALINVITER_QUEUE_CLOSE_CONFIRM")
+        StaticPopup_Show("PORTALINVITERBYILLUSION_QUEUE_CLOSE_CONFIRM")
     end)
 
     -- Maximize (+) button — mirrors the expanded frame's minus button.

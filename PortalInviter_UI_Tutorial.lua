@@ -20,7 +20,7 @@ local function ShowTutorial()
         {
             title = "Guide",
             body =
-                "Portal Inviter detects portal requests in chat and auto-invites the sender.\n\n" ..
+                "Portal Inviter by Illusion detects portal requests in chat and auto-invites the sender.\n\n" ..
 
                 "|cff69ccf0In This Guide|r\n" ..
                 "  |cffbbbbbb2.|r Quick Start\n" ..
@@ -155,7 +155,7 @@ local function ShowTutorial()
             body =
                 "|cff69ccf0It's a Competition|r\n" ..
                 "When someone says |cffffff00\"wtb port\"|r, every mage addon in range fires at " ..
-                "once. Portal Inviter is designed to catch a wider range of requests " ..
+                "once. Portal Inviter by Illusion is designed to catch a wider range of requests " ..
                 "than most — including |cffffff00shorthand|r, |cffffff00misspellings|r, and " ..
                 "|cffffff00fuzzy destination wording|r — so you see invites others miss.\n\n" ..
 
@@ -198,7 +198,7 @@ local function ShowTutorial()
             body =
                 "|cff69ccf0Opening the Settings Panel|r\n" ..
                 "  - |cffffff00Shift+Right-click|r the minimap icon\n" ..
-                "  - Or open |cffffff00Interface > AddOns > PortalInviter|r\n\n" ..
+                "  - Or open |cffffff00Interface > AddOns > Portal Inviter by Illusion|r\n\n" ..
 
                 "|cff69ccf0Auto-Whisper Message|r\n" ..
                 "When an invite fails because the player is already grouped, the addon " ..
@@ -222,7 +222,7 @@ local function ShowTutorial()
 
     local currentPage = 1
 
-    local f = CreateFrame("Frame", "PortalInviterTutorialFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+    local f = CreateFrame("Frame", "PortalInviterByIllusionTutorialFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
     f:SetSize(520, 460)
     f:SetPoint("CENTER")
     f:SetMovable(true)
@@ -257,7 +257,7 @@ local function ShowTutorial()
     closeBtn:SetPoint("TOPRIGHT", -2, -2)
 
     -- Scroll frame
-    local scrollFrame = CreateFrame("ScrollFrame", "PortalInviterTutorialScroll", f, "UIPanelScrollFrameTemplate")
+    local scrollFrame = CreateFrame("ScrollFrame", "PortalInviterByIllusionTutorialScroll", f, "UIPanelScrollFrameTemplate")
     scrollFrame:SetPoint("TOPLEFT", 16, -42)
     scrollFrame:SetPoint("BOTTOMRIGHT", -34, 40)
 
@@ -289,7 +289,7 @@ local function ShowTutorial()
     local function SetPage(page)
         currentPage = page
         local p = pages[currentPage]
-        title:SetText("|cff69ccf0Portal Inviter|r — " .. p.title)
+        title:SetText("|cff69ccf0Portal Inviter by Illusion|r - " .. p.title)
         body:SetText(p.body)
         content:SetHeight(body:GetStringHeight() + 20)
         scrollFrame:SetVerticalScroll(0)
@@ -311,7 +311,7 @@ local function ShowTutorial()
     end)
 
     -- ESC to close
-    table.insert(UISpecialFrames, "PortalInviterTutorialFrame")
+    table.insert(UISpecialFrames, "PortalInviterByIllusionTutorialFrame")
 
     tutorialFrame = f
     SetPage(1)

@@ -1,4 +1,4 @@
--- Interface > AddOns > PortalInviter options panel.
+-- Interface > AddOns > Portal Inviter by Illusion options panel.
 
 local ADDON_NAME, PI = ...
 
@@ -12,11 +12,11 @@ local optionsCategory
 
 local function CreateOptionsPanel()
     local panel = CreateFrame("Frame")
-    panel.name = "PortalInviter"
+    panel.name = "Portal Inviter by Illusion"
 
     local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", 16, -16)
-    title:SetText("PortalInviter")
+    title:SetText("Portal Inviter by Illusion")
 
     local whisperLabel = panel:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     whisperLabel:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -24)
@@ -28,7 +28,7 @@ local function CreateOptionsPanel()
     whisperDesc:SetJustifyH("LEFT")
     whisperDesc:SetText("When an invite fails because the player is already in another group, whisper this. Leave blank to disable. Placeholders: %player%, %destination%.")
 
-    local whisperBox = CreateFrame("EditBox", "PortalInviterWhisperBox", panel, "InputBoxTemplate")
+    local whisperBox = CreateFrame("EditBox", "PortalInviterByIllusionWhisperBox", panel, "InputBoxTemplate")
     whisperBox:SetPoint("TOPLEFT", whisperDesc, "BOTTOMLEFT", 4, -8)
     whisperBox:SetWidth(300)
     whisperBox:SetHeight(20)
@@ -37,7 +37,7 @@ local function CreateOptionsPanel()
 
     local function SaveWhisperBox()
         local text = (whisperBox:GetText() or ""):match("^%s*(.-)%s*$")
-        PortalInviterDB.autoWhisperMessage = text
+        PortalInviterByIllusionDB.autoWhisperMessage = text
     end
 
     whisperBox:SetScript("OnEnterPressed", function(self)
@@ -46,7 +46,7 @@ local function CreateOptionsPanel()
         Print("Auto-whisper message saved.")
     end)
     whisperBox:SetScript("OnEscapePressed", function(self)
-        whisperBox:SetText(PortalInviterDB.autoWhisperMessage or "")
+        whisperBox:SetText(PortalInviterByIllusionDB.autoWhisperMessage or "")
         self:ClearFocus()
     end)
     whisperBox:SetScript("OnEditFocusLost", function()
@@ -61,9 +61,9 @@ local function CreateOptionsPanel()
     joinDesc:SetPoint("TOPLEFT", joinLabel, "BOTTOMLEFT", 0, -4)
     joinDesc:SetWidth(430)
     joinDesc:SetJustifyH("LEFT")
-    joinDesc:SetText("Sent when a buyer joins and PortalInviter knows the destination. Placeholders: %player%, %destination%.")
+    joinDesc:SetText("Sent when a buyer joins and Portal Inviter by Illusion knows the destination. Placeholders: %player%, %destination%.")
 
-    local joinWhisperBox = CreateFrame("EditBox", "PortalInviterJoinWhisperBox", panel, "InputBoxTemplate")
+    local joinWhisperBox = CreateFrame("EditBox", "PortalInviterByIllusionJoinWhisperBox", panel, "InputBoxTemplate")
     joinWhisperBox:SetPoint("TOPLEFT", joinDesc, "BOTTOMLEFT", 4, -8)
     joinWhisperBox:SetWidth(420)
     joinWhisperBox:SetHeight(20)
@@ -71,7 +71,7 @@ local function CreateOptionsPanel()
     joinWhisperBox:SetMaxLetters(200)
 
     local function SaveJoinWhisperBox()
-        PortalInviterDB.joinWhisperMessage = (joinWhisperBox:GetText() or ""):match("^%s*(.-)%s*$")
+        PortalInviterByIllusionDB.joinWhisperMessage = (joinWhisperBox:GetText() or ""):match("^%s*(.-)%s*$")
     end
 
     joinWhisperBox:SetScript("OnEnterPressed", function(self)
@@ -80,7 +80,7 @@ local function CreateOptionsPanel()
         Print("Join whisper saved.")
     end)
     joinWhisperBox:SetScript("OnEscapePressed", function(self)
-        self:SetText(PortalInviterDB.joinWhisperMessage or "")
+        self:SetText(PortalInviterByIllusionDB.joinWhisperMessage or "")
         self:ClearFocus()
     end)
     joinWhisperBox:SetScript("OnEditFocusLost", SaveJoinWhisperBox)
@@ -95,7 +95,7 @@ local function CreateOptionsPanel()
     unknownDesc:SetJustifyH("LEFT")
     unknownDesc:SetText("Sent when a buyer joins but the chat request did not include a clear destination. Leave blank to disable.")
 
-    local unknownWhisperBox = CreateFrame("EditBox", "PortalInviterUnknownWhisperBox", panel, "InputBoxTemplate")
+    local unknownWhisperBox = CreateFrame("EditBox", "PortalInviterByIllusionUnknownWhisperBox", panel, "InputBoxTemplate")
     unknownWhisperBox:SetPoint("TOPLEFT", unknownDesc, "BOTTOMLEFT", 4, -8)
     unknownWhisperBox:SetWidth(420)
     unknownWhisperBox:SetHeight(20)
@@ -103,7 +103,7 @@ local function CreateOptionsPanel()
     unknownWhisperBox:SetMaxLetters(200)
 
     local function SaveUnknownWhisperBox()
-        PortalInviterDB.unknownDestinationWhisperMessage = (unknownWhisperBox:GetText() or ""):match("^%s*(.-)%s*$")
+        PortalInviterByIllusionDB.unknownDestinationWhisperMessage = (unknownWhisperBox:GetText() or ""):match("^%s*(.-)%s*$")
     end
 
     unknownWhisperBox:SetScript("OnEnterPressed", function(self)
@@ -112,17 +112,17 @@ local function CreateOptionsPanel()
         Print("Missing-destination whisper saved.")
     end)
     unknownWhisperBox:SetScript("OnEscapePressed", function(self)
-        self:SetText(PortalInviterDB.unknownDestinationWhisperMessage or "")
+        self:SetText(PortalInviterByIllusionDB.unknownDestinationWhisperMessage or "")
         self:ClearFocus()
     end)
     unknownWhisperBox:SetScript("OnEditFocusLost", SaveUnknownWhisperBox)
 
-    local announceCheck = CreateFrame("CheckButton", "PortalInviterAnnounceCheck", panel, "InterfaceOptionsCheckButtonTemplate")
+    local announceCheck = CreateFrame("CheckButton", "PortalInviterByIllusionAnnounceCheck", panel, "InterfaceOptionsCheckButtonTemplate")
     announceCheck:SetPoint("TOPLEFT", unknownWhisperBox, "BOTTOMLEFT", -4, -16)
     announceCheck.Text:SetText("Announce portal casts to party/raid")
-    announceCheck:SetChecked(PortalInviterDB.announcePortalCasts)
+    announceCheck:SetChecked(PortalInviterByIllusionDB.announcePortalCasts)
     announceCheck:SetScript("OnClick", function(self)
-        PortalInviterDB.announcePortalCasts = self:GetChecked() and true or false
+        PortalInviterByIllusionDB.announcePortalCasts = self:GetChecked() and true or false
     end)
 
     local openIncomeBtn = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
@@ -138,10 +138,10 @@ local function CreateOptionsPanel()
     openTutorialBtn:SetScript("OnClick", function() if PI.ShowTutorial then PI.ShowTutorial() end end)
 
     panel:SetScript("OnShow", function()
-        whisperBox:SetText(PortalInviterDB.autoWhisperMessage or "")
-        joinWhisperBox:SetText(PortalInviterDB.joinWhisperMessage or "")
-        unknownWhisperBox:SetText(PortalInviterDB.unknownDestinationWhisperMessage or "")
-        announceCheck:SetChecked(PortalInviterDB.announcePortalCasts)
+        whisperBox:SetText(PortalInviterByIllusionDB.autoWhisperMessage or "")
+        joinWhisperBox:SetText(PortalInviterByIllusionDB.joinWhisperMessage or "")
+        unknownWhisperBox:SetText(PortalInviterByIllusionDB.unknownDestinationWhisperMessage or "")
+        announceCheck:SetChecked(PortalInviterByIllusionDB.announcePortalCasts)
     end)
 
     -- Legacy InterfaceOptions OK/Cancel/Defaults support
@@ -151,19 +151,19 @@ local function CreateOptionsPanel()
         SaveUnknownWhisperBox()
     end
     panel.cancel = function()
-        whisperBox:SetText(PortalInviterDB.autoWhisperMessage or "")
-        joinWhisperBox:SetText(PortalInviterDB.joinWhisperMessage or "")
-        unknownWhisperBox:SetText(PortalInviterDB.unknownDestinationWhisperMessage or "")
-        announceCheck:SetChecked(PortalInviterDB.announcePortalCasts)
+        whisperBox:SetText(PortalInviterByIllusionDB.autoWhisperMessage or "")
+        joinWhisperBox:SetText(PortalInviterByIllusionDB.joinWhisperMessage or "")
+        unknownWhisperBox:SetText(PortalInviterByIllusionDB.unknownDestinationWhisperMessage or "")
+        announceCheck:SetChecked(PortalInviterByIllusionDB.announcePortalCasts)
     end
     panel.default = function()
         whisperBox:SetText(DEFAULT_ALREADY_GROUPED_WHISPER_MESSAGE)
         joinWhisperBox:SetText(DEFAULT_JOIN_WHISPER_MESSAGE)
         unknownWhisperBox:SetText(DEFAULT_UNKNOWN_DESTINATION_WHISPER_MESSAGE)
-        PortalInviterDB.autoWhisperMessage = DEFAULT_ALREADY_GROUPED_WHISPER_MESSAGE
-        PortalInviterDB.joinWhisperMessage = DEFAULT_JOIN_WHISPER_MESSAGE
-        PortalInviterDB.unknownDestinationWhisperMessage = DEFAULT_UNKNOWN_DESTINATION_WHISPER_MESSAGE
-        PortalInviterDB.announcePortalCasts = true
+        PortalInviterByIllusionDB.autoWhisperMessage = DEFAULT_ALREADY_GROUPED_WHISPER_MESSAGE
+        PortalInviterByIllusionDB.joinWhisperMessage = DEFAULT_JOIN_WHISPER_MESSAGE
+        PortalInviterByIllusionDB.unknownDestinationWhisperMessage = DEFAULT_UNKNOWN_DESTINATION_WHISPER_MESSAGE
+        PortalInviterByIllusionDB.announcePortalCasts = true
         announceCheck:SetChecked(true)
     end
 

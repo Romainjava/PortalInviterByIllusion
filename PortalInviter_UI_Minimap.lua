@@ -17,7 +17,7 @@ local function UpdateMinimapButtonPosition()
         return
     end
 
-    local angle = math.rad(PortalInviterDB.minimapAngle or 220)
+    local angle = math.rad(PortalInviterByIllusionDB.minimapAngle or 220)
     local xOffset = math.cos(angle) * MINIMAP_RADIUS
     local yOffset = math.sin(angle) * MINIMAP_RADIUS
 
@@ -31,10 +31,10 @@ local function RefreshMinimapState()
     end
 
     minimapIcon:SetTexture(
-        PortalInviterDB.autoMode and MINIMAP_ICON_TEXTURE_AUTO or MINIMAP_ICON_TEXTURE
+        PortalInviterByIllusionDB.autoMode and MINIMAP_ICON_TEXTURE_AUTO or MINIMAP_ICON_TEXTURE
     )
 
-    if PortalInviterDB.enabled then
+    if PortalInviterByIllusionDB.enabled then
         if minimapIcon.SetDesaturated then
             minimapIcon:SetDesaturated(false)
         end
@@ -69,7 +69,7 @@ local function CreateMinimapButton()
         return
     end
 
-    minimapButton = CreateFrame("Button", "PortalInviterMinimapButton", Minimap)
+    minimapButton = CreateFrame("Button", "PortalInviterByIllusionMinimapButton", Minimap)
     minimapButton:SetSize(32, 32)
     minimapButton:SetFrameStrata("MEDIUM")
     minimapButton:SetMovable(true)
@@ -111,8 +111,8 @@ local function CreateMinimapButton()
             if optionsCategory and Settings and Settings.OpenToCategory then
                 Settings.OpenToCategory(optionsCategory)
             elseif InterfaceOptionsFrame_OpenToCategory then
-                InterfaceOptionsFrame_OpenToCategory("PortalInviter")
-                InterfaceOptionsFrame_OpenToCategory("PortalInviter")
+                InterfaceOptionsFrame_OpenToCategory("Portal Inviter by Illusion")
+                InterfaceOptionsFrame_OpenToCategory("Portal Inviter by Illusion")
             end
         else
             Print("|cff69ccf0--- Minimap Controls ---|r")
@@ -124,16 +124,16 @@ local function CreateMinimapButton()
             Print("|cff69ccf0--- Slash Commands ---|r")
             Print("|cffffff00/port|r — show full command reference")
             Print("|cffffff00/port income|r — earnings stats  |  |cffffff00/port log|r — trade log")
-            Print("|cffffff00/port tutorial|r — tips for getting the most out of Portal Inviter")
+            Print("|cffffff00/port tutorial|r - tips for getting the most out of Portal Inviter by Illusion")
         end
     end)
 
     minimapButton:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText("PortalInviter")
-        GameTooltip:AddLine("Status: " .. (PortalInviterDB.enabled and "|cff00ff00ON|r" or "|cffff0000OFF|r"))
-        GameTooltip:AddLine("Auto mode: " .. (PortalInviterDB.autoMode and "|cff00ff00ON|r" or "|cffff0000OFF|r"))
-        GameTooltip:AddLine("Sound: " .. (PortalInviterDB.soundMuted and "|cffff0000MUTED|r" or "|cff00ff00ON|r"))
+        GameTooltip:SetText("Portal Inviter by Illusion")
+        GameTooltip:AddLine("Status: " .. (PortalInviterByIllusionDB.enabled and "|cff00ff00ON|r" or "|cffff0000OFF|r"))
+        GameTooltip:AddLine("Auto mode: " .. (PortalInviterByIllusionDB.autoMode and "|cff00ff00ON|r" or "|cffff0000OFF|r"))
+        GameTooltip:AddLine("Sound: " .. (PortalInviterByIllusionDB.soundMuted and "|cffff0000MUTED|r" or "|cff00ff00ON|r"))
         GameTooltip:AddLine("Left-click: toggle invites on/off", 1, 1, 1)
         GameTooltip:AddLine("Shift+Left-click: toggle auto mode", 1, 1, 1)
         GameTooltip:AddLine("Ctrl+Left-click: open income window", 1, 1, 1)
@@ -166,7 +166,7 @@ local function CreateMinimapButton()
         cursorX = cursorX / scale
         cursorY = cursorY / scale
 
-        PortalInviterDB.minimapAngle = GetAngleDegrees(cursorY - centerY, cursorX - centerX)
+        PortalInviterByIllusionDB.minimapAngle = GetAngleDegrees(cursorY - centerY, cursorX - centerX)
         UpdateMinimapButtonPosition()
     end)
 
