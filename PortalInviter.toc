@@ -1,0 +1,16 @@
+## Interface: 11507
+## Title: PortalInviter
+## Notes: Auto-invites portal customers when a Mage leader enables it.
+## Author: m1kas
+## Version: 1.6.0
+## SavedVariables: PortalInviterDB
+
+testmessages.lua
+PortalInviter.lua
+PortalInviter_Income.lua
+PortalInviter_UI_Tutorial.lua
+PortalInviter_UI_Options.lua
+PortalInviter_UI_Minimap.lua
+PortalInviter_UI_Queue.lua
+PortalInviter_UI_Income.lua
+PortalInviter_SlashCommands.lua

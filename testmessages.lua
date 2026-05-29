@@ -1,0 +1,75 @@
+PortalInviterTestMessages = {
+    -- Alliance destinations
+    { message = "wtb port to shat", shouldMatch = true, destination = "Shattrath" },
+    { message = "WTB port shat", shouldMatch = true, destination = "Shattrath" },
+    { message = "wtb port shat pls", shouldMatch = true, destination = "Shattrath" },
+    { message = "LF port SW", shouldMatch = true, destination = "Stormwind" },
+    { message = "port to shat pls", shouldMatch = true, destination = "Shattrath" },
+    { message = "port to darna pls", shouldMatch = true, destination = "Darnassus" },
+    { message = "can i get a portal to theramore please", shouldMatch = true, destination = "Theramore" },
+    { message = "lf mage port to darn", shouldMatch = true, destination = "Darnassus" },
+    { message = "buy port shat", shouldMatch = true, destination = "Shattrath" },
+    { message = "buying port to sw", shouldMatch = true, destination = "Stormwind" },
+    { message = "buying portal ironforge", shouldMatch = true, destination = "Ironforge" },
+    { message = "need port to exo", shouldMatch = true, destination = "Exodar" },
+    { message = "pls portal elxidor", shouldMatch = true, destination = "Exodar" },
+    { message = "need portal shat", shouldMatch = true, destination = "Shattrath" },
+    { message = "Shatrath portal please <3", shouldMatch = true, destination = "Shattrath" },
+    -- Horde destinations (only pass when playing as Horde)
+    { message = "wtb port to org", shouldMatch = true, destination = "Orgrimmar" },
+    { message = "lf port orgrimmar pls", shouldMatch = true, destination = "Orgrimmar" },
+    { message = "need portal to uc", shouldMatch = true, destination = "Undercity" },
+    { message = "wtb port tb pls", shouldMatch = true, destination = "Thunder Bluff" },
+    { message = "can i get a portal to thunder bluff", shouldMatch = true, destination = "Thunder Bluff" },
+    { message = "lf port silvermoon pls", shouldMatch = true, destination = "Silvermoon" },
+    { message = "need port to stonard", shouldMatch = true, destination = "Stonard" },
+    -- Bare "portal <destination>" requests (no request-intent word needed)
+    { message = "portal shatrak",  shouldMatch = true, destination = "Shattrath" },
+    { message = "portal sw",        shouldMatch = true, destination = "Stormwind" },
+    { message = "port org",         shouldMatch = true, destination = "Orgrimmar" },
+    { message = "tp shat",          shouldMatch = true, destination = "Shattrath" },
+    -- Fuzzy destination matching (novel typos not in alias lists)
+    { message = "wtb port stormwund", shouldMatch = true, destination = "Stormwind" },
+    { message = "lf port orgrimmor", shouldMatch = true, destination = "Orgrimmar" },
+    { message = "need portal ironforje", shouldMatch = true, destination = "Ironforge" },
+    { message = "wtb port shattreth", shouldMatch = true, destination = "Shattrath" },
+    { message = "port to silvrmun pls", shouldMatch = true, destination = "Silvermoon" },
+    { message = "wtb port darnasas", shouldMatch = true, destination = "Darnassus" },
+    -- Destination-less portal requests
+    { message = "wtb port", shouldMatch = true, destination = "any" },
+    { message = "lf port", shouldMatch = true, destination = "any" },
+    { message = "wtb portal pls", shouldMatch = true, destination = "any" },
+    { message = "need port please", shouldMatch = true, destination = "any" },
+    -- Teleport / TP keyword requests
+    { message = "lf tp exodar", shouldMatch = true, destination = "Exodar" },
+    { message = "wtb teleport shat", shouldMatch = true, destination = "Shattrath" },
+    { message = "lf tp", shouldMatch = true, destination = "any" },
+    { message = "wtb teleport pls", shouldMatch = true, destination = "any" },
+    { message = "tp to sw pls", shouldMatch = true, destination = "Stormwind" },
+    { message = "need tp please", shouldMatch = true, destination = "any" },
+    -- Mageport keyword requests
+    { message = "LF mageport", shouldMatch = true, destination = "any" },
+    { message = "wtb mageport sw", shouldMatch = true, destination = "Stormwind" },
+    -- Truncated/typo politeness words
+    { message = "possible tp pleas", shouldMatch = true, destination = "any" },
+    -- "for me" phrasing
+    { message = "can anyone create portal for me closest to Exodar ?", shouldMatch = true, destination = "Exodar" },
+    { message = "can someone port for me to shat", shouldMatch = true, destination = "Shattrath" },
+    -- Compound "lfport" / "lftp" requests
+    { message = "lfport", shouldMatch = true, destination = "any" },
+    { message = "lfport shat", shouldMatch = true, destination = "Shattrath" },
+    -- "any portals" phrasing
+    { message = "ANY PORTALS EXODAR?", shouldMatch = true, destination = "Exodar" },
+    { message = "any portal to shatt?", shouldMatch = true, destination = "Shattrath" },
+    { message = "any ports sw?", shouldMatch = true, destination = "Stormwind" },
+    { message = "any port pls", shouldMatch = true, destination = "any" },
+    -- Negative cases
+    { message = "WTS portals to shat", shouldMatch = false },
+    { message = "LFW portal seller for shat", shouldMatch = false },
+    { message = "need summons to shat", shouldMatch = false },
+    { message = "wtb water in shat", shouldMatch = false },
+    { message = "portal trainer is in stormwind", shouldMatch = false },
+    -- Double-letter portal-keyword typos (e.g. "portall")
+    { message = "wtb portall shattrat", shouldMatch = true, destination = "Shattrath" },
+    { message = "wtb portalls sw", shouldMatch = true, destination = "Stormwind" },
+}
