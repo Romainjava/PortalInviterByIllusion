@@ -2,7 +2,7 @@
 ## Title: PortalInviter
 ## Notes: Auto-invites portal customers when a Mage leader enables it.
 ## Author: m1kas
-## Version: 1.6.0
+## Version: 1.7.0
 ## SavedVariables: PortalInviterDB
 
 testmessages.lua

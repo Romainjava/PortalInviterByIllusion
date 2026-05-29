@@ -19,15 +19,20 @@ PortalInviterTestMessages = {
     { message = "wtb port to org", shouldMatch = true, destination = "Orgrimmar" },
     { message = "lf port orgrimmar pls", shouldMatch = true, destination = "Orgrimmar" },
     { message = "need portal to uc", shouldMatch = true, destination = "Undercity" },
+    { message = "possible tele uc", shouldMatch = true, destination = "Undercity" },
     { message = "wtb port tb pls", shouldMatch = true, destination = "Thunder Bluff" },
     { message = "can i get a portal to thunder bluff", shouldMatch = true, destination = "Thunder Bluff" },
     { message = "lf port silvermoon pls", shouldMatch = true, destination = "Silvermoon" },
+    { message = "looking for protal sm", shouldMatch = true, destination = "Silvermoon" },
     { message = "need port to stonard", shouldMatch = true, destination = "Stonard" },
+    { message = "can you make og portal", shouldMatch = true, destination = "Orgrimmar" },
     -- Bare "portal <destination>" requests (no request-intent word needed)
     { message = "portal shatrak",  shouldMatch = true, destination = "Shattrath" },
     { message = "portal sw",        shouldMatch = true, destination = "Stormwind" },
     { message = "port org",         shouldMatch = true, destination = "Orgrimmar" },
     { message = "tp shat",          shouldMatch = true, destination = "Shattrath" },
+    { message = "prt shath",        shouldMatch = true, destination = "Shattrath" },
+    { message = "tele shatrak",     shouldMatch = true, destination = "Shattrath" },
     -- Fuzzy destination matching (novel typos not in alias lists)
     { message = "wtb port stormwund", shouldMatch = true, destination = "Stormwind" },
     { message = "lf port orgrimmor", shouldMatch = true, destination = "Orgrimmar" },
@@ -52,12 +57,15 @@ PortalInviterTestMessages = {
     { message = "wtb mageport sw", shouldMatch = true, destination = "Stormwind" },
     -- Truncated/typo politeness words
     { message = "possible tp pleas", shouldMatch = true, destination = "any" },
+    { message = "want to buy pportal shat", shouldMatch = true, destination = "Shattrath" },
+    { message = "seeking portla shattrak", shouldMatch = true, destination = "Shattrath" },
     -- "for me" phrasing
     { message = "can anyone create portal for me closest to Exodar ?", shouldMatch = true, destination = "Exodar" },
     { message = "can someone port for me to shat", shouldMatch = true, destination = "Shattrath" },
     -- Compound "lfport" / "lftp" requests
     { message = "lfport", shouldMatch = true, destination = "any" },
     { message = "lfport shat", shouldMatch = true, destination = "Shattrath" },
+    { message = "lftp shat", shouldMatch = true, destination = "Shattrath" },
     -- "any portals" phrasing
     { message = "ANY PORTALS EXODAR?", shouldMatch = true, destination = "Exodar" },
     { message = "any portal to shatt?", shouldMatch = true, destination = "Shattrath" },
