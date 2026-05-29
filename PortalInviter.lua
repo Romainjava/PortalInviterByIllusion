@@ -63,7 +63,22 @@ local QueueSetMarker
 local INVITE_COOLDOWN_SECONDS = 30
 local INVITE_ALERT_SOUND = "Sound\\Interface\\AlarmClockWarning3.ogg"
 local INVITE_ALERT_SOUND_KIT = 12867  -- ALARM_CLOCK_WARNING_3
-local PORTAL_SPELL_IDS = { 10059, 11416, 11417, 11418, 11419, 11420, 32266, 32267, 33691, 35717, 49360, 49361 }
+local PORTAL_SPELL_IDS_BY_DESTINATION = {
+    ["Stormwind"]     = { 10059 },
+    ["Ironforge"]     = { 11416 },
+    ["Orgrimmar"]     = { 11417 },
+    ["Undercity"]     = { 11418 },
+    ["Darnassus"]     = { 11419 },
+    ["Thunder Bluff"] = { 11420 },
+    ["Exodar"]        = { 32266 },
+    ["Silvermoon"]    = { 32267 },
+    ["Shattrath"]     = { 33691, 35717 },
+    ["Theramore"]     = { 49360 },
+    ["Stonard"]       = { 49361 },
+}
+local DEFAULT_JOIN_WHISPER_MESSAGE = "Hey %player%, I'm marked with a star. I'll make %destination% now - come to me when you're ready."
+local DEFAULT_UNKNOWN_DESTINATION_WHISPER_MESSAGE = "Hey %player%, I'm marked with a star. Which portal do you need?"
+local DEFAULT_ALREADY_GROUPED_WHISPER_MESSAGE = "I can invite you for the portal when you're free - just whisper me again."
 local DESTINATION_SOUNDS = {
     ["unknown"]      = "Interface\\AddOns\\PortalInviter\\Sound\\Destination.ogg",
     ["Stormwind"]    = "Interface\\AddOns\\PortalInviter\\Sound\\Stormwind.ogg",
@@ -123,17 +138,27 @@ local P_PORTALS       = " portals "
 local P_TP            = " tp "
 local P_TELEPORT      = " teleport "
 local P_TELEPORTS     = " teleports "
+local P_TELE          = " tele "
+local P_PRT           = " prt "
+local P_PORTLA        = " portla "
+local P_PPORTAL       = " pportal "
+local P_PROTAL        = " protal "
+local P_PPORT         = " pport "
 local P_MAGEPORT      = " mageport "
 local P_MAGEPORTS     = " mageports "
 local P_LFPORT        = " lfport "
+local P_LFTP          = " lftp "
 local P_PORT_TO       = " port to "
 local P_PORTAL_TO     = " portal to "
 local P_TP_TO         = " tp to "
 local P_TELEPORT_TO   = " teleport to "
+local P_TELE_TO       = " tele to "
+local P_PRT_TO        = " prt to "
 local P_PORT_ME       = " port me "
 local P_PORTAL_ME     = " portal me "
 local P_TP_ME         = " tp me "
 local P_TELEPORT_ME   = " teleport me "
+local P_TELE_ME       = " tele me "
 local P_PLS           = " pls "
 local P_PLSS          = " plss "
 local P_PLIS          = " plis "
@@ -146,18 +171,36 @@ local P_CAN_I_GET     = " can i get "
 local P_CAN_I_HAVE    = " can i have "
 local P_COULD_I_GET   = " could i get "
 local P_COULD_I_HAVE  = " could i have "
+local P_WANT_TO_BUY   = " want to buy "
+local P_LOOKING_FOR   = " looking for "
+local P_SEEKING       = " seeking "
+local P_PURCHASING    = " purchasing "
+local P_POSSIBLE      = " possible "
 local P_CAN_U_PORT    = " can u port "
 local P_CAN_U_PORTAL  = " can u portal "
 local P_CAN_U_TP      = " can u tp "
 local P_CAN_U_TEL     = " can u teleport "
+local P_CAN_U_MAKE    = " can u make "
+local P_CAN_U_DO      = " can u do "
 local P_COULD_U_PORT  = " could u port "
 local P_COULD_U_PORTAL = " could u portal "
 local P_COULD_U_TP    = " could u tp "
 local P_COULD_U_TEL   = " could u teleport "
+local P_COULD_U_MAKE  = " could u make "
+local P_COULD_U_DO    = " could u do "
 local P_COULD_I_PORT  = " could i port "
 local P_COULD_I_PORTAL = " could i portal "
 local P_COULD_I_TP    = " could i tp "
 local P_COULD_I_TEL   = " could i teleport "
+local P_CAN_ANYONE_MAKE = " can anyone make "
+local P_CAN_ANYONE_DO   = " can anyone do "
+local P_CAN_ANYONE_CREATE = " can anyone create "
+local P_CAN_SOMEONE_MAKE = " can someone make "
+local P_CAN_SOMEONE_DO   = " can someone do "
+local P_CAN_SOMEONE_CREATE = " can someone create "
+local P_CAN_YOU_MAKE     = " can you make "
+local P_CAN_YOU_DO       = " can you do "
+local P_CAN_YOU_CREATE   = " can you create "
 local P_MAKE_ME       = " make me "
 local P_GIVE_ME       = " give me "
 local P_GIMME         = " gimme "
@@ -188,23 +231,23 @@ local P_TIPS          = " tips "
 -- minLevel: the player level at which this portal first becomes trainable.
 -- BuildDestinations skips entries the mage is too low-level to have learned.
 local ALLIANCE_DESTINATIONS = {
-    { label = "Stormwind",     minLevel = 40, aliases = { "stormwind", "stormwnd", "stormwin", "stormwid", "stromwind", "stormwindd", "stormwing", "stomrwind", "storwmind", "strom", "storm", "sw" } },
-    { label = "Ironforge",     minLevel = 40, aliases = { "ironforge", "ironfroge", "ironfrge", "ironforg", "irnforge", "irongorge", "ironfoge", "ironforeg", "ironf", "iron", "iforge", "if" } },
-    { label = "Darnassus",     minLevel = 40, aliases = { "darnassus", "darnasus", "darnassuss", "daranssus", "darnasuss", "darnasuus", "darnasus", "darnass", "darnas", "darna", "darny", "darn" } },
-    { label = "Exodar",        minLevel = 65, aliases = { "exodar", "eoxdar", "exodra", "exoda", "exodr", "exoar", "elxidor", "theexodar", "exod", "exd", "exo" } },
-    { label = "Theramore",     minLevel = 35, aliases = { "theramore", "theramor", "theramre", "theramroe", "therramore", "theremor", "theramoor", "thera more", "theram", "thera" } },
+    { label = "Stormwind",     minLevel = 40, aliases = { "stormwind", "storm wind", "stormwnd", "stormwin", "stormwid", "stromwind", "stormwindd", "stormwing", "stomrwind", "storwmind", "strom", "storm", "sw", "swc" } },
+    { label = "Ironforge",     minLevel = 40, aliases = { "ironforge", "iron forge", "ironfroge", "ironfrge", "ironforg", "irnforge", "irongorge", "ironfoge", "ironforeg", "ironf", "iron", "iforge", "if" } },
+    { label = "Darnassus",     minLevel = 40, aliases = { "darnassus", "darnasus", "darnassuss", "daranssus", "darnasuss", "darnasuus", "darnass", "darnas", "darna", "darny", "darn" } },
+    { label = "Exodar",        minLevel = 65, aliases = { "exodar", "eoxdar", "exodra", "exoda", "exodr", "exoar", "exidor", "elxidor", "theexodar", "exod", "exd", "exo" } },
+    { label = "Theramore",     minLevel = 35, aliases = { "theramore", "theramor", "theramre", "theramroe", "therramore", "theremor", "theramoor", "thera more", "theramore isle", "theram", "thera", "tmore" } },
 }
 
 local HORDE_DESTINATIONS = {
-    { label = "Orgrimmar",     minLevel = 40, aliases = { "orgrimmar", "ogrimar", "ogrimmar", "orgrimmer", "origrimmar", "orgimar", "orgrimar", "orgimmar", "orgrimm", "ogrim", "orgrim", "orgri", "org" } },
-    { label = "Undercity",     minLevel = 40, aliases = { "undercity", "undercty", "undrecity", "underciy", "undecity", "undrcity", "udnercity", "undecty", "underc", "under", "uc" } },
+    { label = "Orgrimmar",     minLevel = 40, aliases = { "orgrimmar", "ogrimar", "ogrimmar", "orgrimmer", "origrimmar", "orgimar", "orgrimar", "orgimmar", "orgrimm", "ogrim", "orgrim", "orgr", "orgri", "orgim", "org", "ogr", "og" } },
+    { label = "Undercity",     minLevel = 40, aliases = { "undercity", "under city", "undercty", "undrecity", "underciy", "undecity", "undrcity", "udnercity", "undecty", "underc", "under", "uc" } },
     { label = "Thunder Bluff", minLevel = 40, aliases = { "thunder bluff", "thunderbluff", "thunderbluf", "thundr bluff", "thudner bluff", "tunderbluff", "thunderblf", "thunderb", "thunder", "thundr", "tbluff", "tbluf", "tb" } },
-    { label = "Silvermoon",    minLevel = 65, aliases = { "silvermoon", "silvermun", "silvremoon", "silvermoo", "silvrmoon", "slivermoon", "silvemoon", "silverm", "silver", "silv", "sm" } },
+    { label = "Silvermoon",    minLevel = 65, aliases = { "silvermoon", "silver moon", "silvermun", "silvremoon", "silvermoo", "silvrmoon", "slivermoon", "silvemoon", "silverm", "smoon", "silver", "silv", "sm" } },
     { label = "Stonard",       minLevel = 35, aliases = { "stonard", "stonnard", "stonar", "stonnrd", "stoneard", "stonrd", "stonaard", "stona", "stond", "ston" } },
 }
 
 local NEUTRAL_DESTINATIONS = {
-    { label = "Shattrath",     minLevel = 65, aliases = { "shattrath", "shatrath", "shatrrath", "shattath", "shatttrath", "shatrth", "shatrt", "shatr", "shatt", "shattr", "shat" } },
+    { label = "Shattrath",     minLevel = 65, aliases = { "shattrath", "shatrath", "shatrah", "shatra", "shatrrath", "shattath", "shatttrath", "shattarath", "shattrak", "shatrak", "shatrth", "shatrt", "shatr", "shath", "shatt", "shattr", "shat" } },
 }
 
 local function BuildDestinations()
@@ -300,7 +343,15 @@ local function EnsureDB()
     end
 
     if PortalInviterDB.autoWhisperMessage == nil then
-        PortalInviterDB.autoWhisperMessage = ""
+        PortalInviterDB.autoWhisperMessage = DEFAULT_ALREADY_GROUPED_WHISPER_MESSAGE
+    end
+
+    if PortalInviterDB.joinWhisperMessage == nil then
+        PortalInviterDB.joinWhisperMessage = DEFAULT_JOIN_WHISPER_MESSAGE
+    end
+
+    if PortalInviterDB.unknownDestinationWhisperMessage == nil then
+        PortalInviterDB.unknownDestinationWhisperMessage = DEFAULT_UNKNOWN_DESTINATION_WHISPER_MESSAGE
     end
 
     if PortalInviterDB.announcePortalCasts == nil then
@@ -356,6 +407,29 @@ end
 
 local function NormalizeName(name)
     return string.lower(ShortName(name))
+end
+
+local function FormatCustomerMessage(template, target, destination)
+    if not template or template == "" then return nil end
+    local displayDestination = destination
+    if not displayDestination or displayDestination == "unknown" or displayDestination == "any" then
+        displayDestination = "your portal"
+    else
+        displayDestination = "Portal: " .. displayDestination
+    end
+    local message = template
+    message = message:gsub("%%player%%", ShortName(target or ""))
+    message = message:gsub("%%destination%%", displayDestination)
+    return message
+end
+
+local function WhisperCustomer(target, message)
+    if not target or target == "" or not message or message == "" then return end
+    if C_ChatInfo and C_ChatInfo.SendChatMessage then
+        C_ChatInfo.SendChatMessage(message, "WHISPER", nil, target)
+    else
+        SendChatMessage(message, "WHISPER", nil, target)
+    end
 end
 
 local function NormalizeText(text)
@@ -441,12 +515,43 @@ local function HasPortalWord(text)
         or text:find(P_TP,        1, true) ~= nil
         or text:find(P_TELEPORT,  1, true) ~= nil
         or text:find(P_TELEPORTS, 1, true) ~= nil
+        or text:find(P_TELE,      1, true) ~= nil
+        or text:find(P_PRT,       1, true) ~= nil
+        or text:find(P_PORTLA,    1, true) ~= nil
+        or text:find(P_PPORTAL,   1, true) ~= nil
+        or text:find(P_PROTAL,    1, true) ~= nil
+        or text:find(P_PPORT,     1, true) ~= nil
         or text:find(P_MAGEPORT,  1, true) ~= nil
         or text:find(P_MAGEPORTS, 1, true) ~= nil
         or text:find(P_LFPORT,    1, true) ~= nil
+        or text:find(P_LFTP,      1, true) ~= nil
         -- Catch double-letter typos like "portall", "portalls" that miss the
         -- exact checks above. Matches any word starting with "port" + more letters.
         or text:find(" port%a+ ") ~= nil
+end
+
+local function IsSoftRequestContext(event)
+    return event == "CHAT_MSG_WHISPER"
+        or event == "CHAT_MSG_BN_WHISPER"
+        or event == "CHAT_MSG_SAY"
+end
+
+local function IsDestinationOnlyRequest(normalized, paddedText, destination)
+    if not destination then return false end
+
+    local wordCount = 0
+    for _ in normalized:gmatch("%S+") do
+        wordCount = wordCount + 1
+        if wordCount > 3 then
+            return false
+        end
+    end
+
+    if wordCount <= 2 then return true end
+    return paddedText:find(P_PLS, 1, true)
+        or paddedText:find(P_PLEASE, 1, true)
+        or paddedText:find(P_PLZ, 1, true)
+        or paddedText:find(P_POSSIBLE, 1, true)
 end
 
 local function HasDirectPortalRequest(paddedText, hasPortal)
@@ -458,10 +563,13 @@ local function HasDirectPortalRequest(paddedText, hasPortal)
         or paddedText:find(P_PORTAL_TO,    1, true)
         or paddedText:find(P_TP_TO,        1, true)
         or paddedText:find(P_TELEPORT_TO,  1, true)
+        or paddedText:find(P_TELE_TO,      1, true)
+        or paddedText:find(P_PRT_TO,       1, true)
         or paddedText:find(P_PORT_ME,      1, true)
         or paddedText:find(P_PORTAL_ME,    1, true)
         or paddedText:find(P_TP_ME,        1, true)
-        or paddedText:find(P_TELEPORT_ME,  1, true) then
+        or paddedText:find(P_TELEPORT_ME,  1, true)
+        or paddedText:find(P_TELE_ME,      1, true) then
         return true
     end
 
@@ -477,18 +585,36 @@ local function HasDirectPortalRequest(paddedText, hasPortal)
         or paddedText:find(P_CAN_I_HAVE,     1, true)
         or paddedText:find(P_COULD_I_GET,    1, true)
         or paddedText:find(P_COULD_I_HAVE,   1, true)
+        or paddedText:find(P_WANT_TO_BUY,    1, true)
+        or paddedText:find(P_LOOKING_FOR,    1, true)
+        or paddedText:find(P_SEEKING,        1, true)
+        or paddedText:find(P_PURCHASING,     1, true)
+        or paddedText:find(P_POSSIBLE,       1, true)
         or paddedText:find(P_CAN_U_PORT,     1, true)
         or paddedText:find(P_CAN_U_PORTAL,   1, true)
         or paddedText:find(P_CAN_U_TP,       1, true)
         or paddedText:find(P_CAN_U_TEL,      1, true)
+        or paddedText:find(P_CAN_U_MAKE,     1, true)
+        or paddedText:find(P_CAN_U_DO,       1, true)
         or paddedText:find(P_COULD_U_PORT,   1, true)
         or paddedText:find(P_COULD_U_PORTAL, 1, true)
         or paddedText:find(P_COULD_U_TP,     1, true)
         or paddedText:find(P_COULD_U_TEL,    1, true)
+        or paddedText:find(P_COULD_U_MAKE,   1, true)
+        or paddedText:find(P_COULD_U_DO,     1, true)
         or paddedText:find(P_COULD_I_PORT,   1, true)
         or paddedText:find(P_COULD_I_PORTAL, 1, true)
         or paddedText:find(P_COULD_I_TP,     1, true)
         or paddedText:find(P_COULD_I_TEL,    1, true)
+        or paddedText:find(P_CAN_ANYONE_MAKE, 1, true)
+        or paddedText:find(P_CAN_ANYONE_DO,   1, true)
+        or paddedText:find(P_CAN_ANYONE_CREATE, 1, true)
+        or paddedText:find(P_CAN_SOMEONE_MAKE, 1, true)
+        or paddedText:find(P_CAN_SOMEONE_DO,   1, true)
+        or paddedText:find(P_CAN_SOMEONE_CREATE, 1, true)
+        or paddedText:find(P_CAN_YOU_MAKE,     1, true)
+        or paddedText:find(P_CAN_YOU_DO,       1, true)
+        or paddedText:find(P_CAN_YOU_CREATE,   1, true)
         or paddedText:find(P_MAKE_ME,        1, true)
         or paddedText:find(P_GIVE_ME,        1, true)
         or paddedText:find(P_GIMME,          1, true)
@@ -500,6 +626,7 @@ local function HasDirectPortalRequest(paddedText, hasPortal)
         or paddedText:find(P_NEED_TP,        1, true)
         or paddedText:find(P_NEED_TELEPORT,  1, true)
         or paddedText:find(P_LFPORT,         1, true)
+        or paddedText:find(P_LFTP,           1, true)
         or paddedText:find(P_ANY_PORT,       1, true)
         or paddedText:find(P_ANY_PORTS,      1, true)
         or paddedText:find(P_ANY_PORTAL,     1, true)
@@ -698,7 +825,16 @@ local function MatchRequestFast(message, event)
     if HasBlockedIntent(paddedText) then return false end
 
     local hasPortal = HasPortalWord(paddedText)
-    if not hasPortal then return false end
+    local softRequestContext = IsSoftRequestContext(event)
+    if not hasPortal then
+        if softRequestContext then
+            local destination = FindDestination(normalized)
+            if IsDestinationOnlyRequest(normalized, paddedText, destination) then
+                return true, normalized, destination
+            end
+        end
+        return false
+    end
 
     -- Whisper fast-path: someone whispering a mage with a portal word is
     -- effectively always a buyer (sellers broadcast in trade, not whispers),
@@ -822,33 +958,54 @@ local function MarkJoiner(unit)
     return icon
 end
 
+local function IsSpellNameInSpellbook(spellName)
+    if not spellName or not GetSpellBookItemName then return false end
+
+    for i = 1, 1024 do
+        local knownName = GetSpellBookItemName(i, BOOKTYPE_SPELL)
+        if not knownName then break end
+        if knownName == spellName then
+            return true
+        end
+    end
+
+    return false
+end
+
+local function IsPortalSpellKnown(spellID, spellName)
+    local checkedByID = false
+    if IsPlayerSpell then
+        checkedByID = true
+        if IsPlayerSpell(spellID) then return true end
+    end
+    if IsSpellKnown then
+        checkedByID = true
+        if IsSpellKnown(spellID) then return true end
+    end
+    if IsSpellKnownOrOverridesKnown then
+        checkedByID = true
+        if IsSpellKnownOrOverridesKnown(spellID) then return true end
+    end
+
+    if checkedByID then return false end
+    return IsSpellNameInSpellbook(spellName)
+end
+
 local function RefreshPortalSpellNames()
     portalSpellNames = {}
     portalSpellToDestination = {}
     destinationToPortalSpell = {}
 
-    -- Map rank-less portal spell name -> destination label by scanning the
-    -- faction + neutral destination lists. Spell names look like
-    -- "Portal: Stormwind", "Teleport: Stormwind", etc.
-    local destinationLabels = {}
-    for _, d in ipairs(ALLIANCE_DESTINATIONS) do destinationLabels[#destinationLabels + 1] = d.label end
-    for _, d in ipairs(HORDE_DESTINATIONS)    do destinationLabels[#destinationLabels + 1] = d.label end
-    for _, d in ipairs(NEUTRAL_DESTINATIONS)  do destinationLabels[#destinationLabels + 1] = d.label end
-
-    for _, spellID in ipairs(PORTAL_SPELL_IDS) do
-        local spellName, _, icon = GetSpellInfo(spellID)
-        if spellName and spellName ~= "" then
-            portalSpellNames[spellName] = true
-            -- Only group-portal spells ("Portal: ...") are queue-castable.
-            -- Teleport spells target self only and don't resolve tickets.
-            local isGroupPortal = spellName:find("Portal", 1, true) ~= nil
-            for _, label in ipairs(destinationLabels) do
-                if spellName:find(label, 1, true) then
-                    portalSpellToDestination[spellName] = label
-                    if isGroupPortal and not destinationToPortalSpell[label] then
-                        destinationToPortalSpell[label] = { name = spellName, icon = icon }
-                    end
-                    break
+    -- Use spellIDs instead of English spell names so the cast button and cast
+    -- correlation work on localized clients (e.g. frFR "Portail : ...").
+    for label, spellIDs in pairs(PORTAL_SPELL_IDS_BY_DESTINATION) do
+        for _, spellID in ipairs(spellIDs) do
+            local spellName, _, icon = GetSpellInfo(spellID)
+            if spellName and spellName ~= "" and IsPortalSpellKnown(spellID, spellName) then
+                portalSpellNames[spellName] = true
+                portalSpellToDestination[spellName] = label
+                if not destinationToPortalSpell[label] then
+                    destinationToPortalSpell[label] = { name = spellName, icon = icon, spellID = spellID }
                 end
             end
         end
@@ -1199,6 +1356,10 @@ local function CouldBePortalRequest(message)
     -- every chat message the addon sees.
     if message:find("[Pp][Oo][Rr][Tt]") then return true end
     if message:find("[Tt][Pp]")         then return true end
+    if message:find("[Pp][Rr][Tt]")     then return true end
+    if message:find("[Tt][Ee][Ll][Ee]") then return true end
+    if message:find("[Pp][Pp][Oo][Rr][Tt]") then return true end
+    if message:find("[Pp][Rr][Oo][Tt][Aa][Ll]") then return true end
     return false
 end
 
@@ -1216,7 +1377,10 @@ local function HandlePotentialCustomer(event, message, sender, languageName, cha
     -- CouldBePortalRequest rejects the vast majority of chat messages with two
     -- C-level string.find calls on the *raw* message, so it runs first — ahead
     -- of NormalizeName(sender) which would allocate a lowercased copy.
-    if not message or not CouldBePortalRequest(message) then
+    if not message then
+        return
+    end
+    if not CouldBePortalRequest(message) and not IsSoftRequestContext(event) then
         return
     end
 
@@ -1329,7 +1493,7 @@ local function HandlePotentialCustomer(event, message, sender, languageName, cha
 
     local now = GetTime()
     pendingWhispers[normalizedInviteTarget] = { target = inviteTarget, time = now }
-    pendingDestinations[normalizedInviteTarget] = { destination = destination, time = now }
+    pendingDestinations[normalizedInviteTarget] = { destination = destination, target = inviteTarget, time = now }
     PlayInviteAlert()
     local playerEntry = recentPortalsByPlayer[normalizedInviteTarget]
     local nameHex = (playerEntry and playerEntry.class and PI.ClassColorHex(playerEntry.class)) or "a8d9ff"
@@ -1412,13 +1576,17 @@ local function HandleInviteFailedWhisper(errorMessage)
         return
     end
 
-    local whisperMsg = PortalInviterDB.autoWhisperMessage
+    local pendingDestination = pendingDestinations[normalizedCaptured]
+    local whisperMsg = FormatCustomerMessage(
+        PortalInviterDB.autoWhisperMessage,
+        entry.target,
+        pendingDestination and pendingDestination.destination)
     if not whisperMsg or whisperMsg == "" then
         pendingWhispers[normalizedCaptured] = nil
         return
     end
 
-    C_ChatInfo.SendChatMessage(whisperMsg, "WHISPER", nil, entry.target)
+    WhisperCustomer(entry.target, whisperMsg)
     DebugPrint("Sent auto-whisper to \"%s\" (already in a group): %s", entry.target, whisperMsg)
     Print(string.format("Whispered \"%s\": %s", entry.target, whisperMsg))
     pendingWhispers[normalizedCaptured] = nil
@@ -1654,6 +1822,13 @@ local function HandleGroupJoins()
                 if markerIcon then
                     QueueSetMarker(normalizedName, markerIcon)
                 end
+
+                local whisperTarget = entry.target or displayName or normalizedName
+                local joinTemplate = destination and destination ~= "unknown"
+                    and PortalInviterDB.joinWhisperMessage
+                    or PortalInviterDB.unknownDestinationWhisperMessage
+                WhisperCustomer(whisperTarget,
+                    FormatCustomerMessage(joinTemplate, whisperTarget, destination))
 
                 pendingDestinations[normalizedName] = nil
                 -- Clear the pending whisper entry so a later unrelated
