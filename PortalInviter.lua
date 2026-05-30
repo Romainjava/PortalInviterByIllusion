@@ -131,104 +131,141 @@ local SELF_STAR_MARK_ICON = 1
 
 -- Pre-computed padded phrase constants — built once at load time so hot-path
 -- matching never allocates temporary strings.
-local P_WTS           = " wts "
-local P_LFW           = " lfw "
-local P_PORT          = " port "
-local P_PORTS         = " ports "
-local P_PORTAL        = " portal "
-local P_PORTALS       = " portals "
-local P_TP            = " tp "
-local P_TELEPORT      = " teleport "
-local P_TELEPORTS     = " teleports "
-local P_TELE          = " tele "
-local P_PRT           = " prt "
-local P_PORTLA        = " portla "
-local P_PPORTAL       = " pportal "
-local P_PROTAL        = " protal "
-local P_PPORT         = " pport "
-local P_MAGEPORT      = " mageport "
-local P_MAGEPORTS     = " mageports "
-local P_LFPORT        = " lfport "
-local P_LFTP          = " lftp "
-local P_PORT_TO       = " port to "
-local P_PORTAL_TO     = " portal to "
-local P_TP_TO         = " tp to "
-local P_TELEPORT_TO   = " teleport to "
-local P_TELE_TO       = " tele to "
-local P_PRT_TO        = " prt to "
-local P_PORT_ME       = " port me "
-local P_PORTAL_ME     = " portal me "
-local P_TP_ME         = " tp me "
-local P_TELEPORT_ME   = " teleport me "
-local P_TELE_ME       = " tele me "
-local P_PLS           = " pls "
-local P_PLSS          = " plss "
-local P_PLIS          = " plis "
-local P_PLEAS         = " pleas "
-local P_PLEASE        = " please "
-local P_PLZ           = " plz "
-local P_PLZZ          = " plzz "
-local P_PLOX          = " plox "
-local P_CAN_I_GET     = " can i get "
-local P_CAN_I_HAVE    = " can i have "
-local P_COULD_I_GET   = " could i get "
-local P_COULD_I_HAVE  = " could i have "
-local P_WANT_TO_BUY   = " want to buy "
-local P_LOOKING_FOR   = " looking for "
-local P_SEEKING       = " seeking "
-local P_PURCHASING    = " purchasing "
-local P_POSSIBLE      = " possible "
-local P_CAN_U_PORT    = " can u port "
-local P_CAN_U_PORTAL  = " can u portal "
-local P_CAN_U_TP      = " can u tp "
-local P_CAN_U_TEL     = " can u teleport "
-local P_CAN_U_MAKE    = " can u make "
-local P_CAN_U_DO      = " can u do "
-local P_COULD_U_PORT  = " could u port "
-local P_COULD_U_PORTAL = " could u portal "
-local P_COULD_U_TP    = " could u tp "
-local P_COULD_U_TEL   = " could u teleport "
-local P_COULD_U_MAKE  = " could u make "
-local P_COULD_U_DO    = " could u do "
-local P_COULD_I_PORT  = " could i port "
-local P_COULD_I_PORTAL = " could i portal "
-local P_COULD_I_TP    = " could i tp "
-local P_COULD_I_TEL   = " could i teleport "
-local P_CAN_ANYONE_MAKE = " can anyone make "
-local P_CAN_ANYONE_DO   = " can anyone do "
-local P_CAN_ANYONE_CREATE = " can anyone create "
-local P_CAN_SOMEONE_MAKE = " can someone make "
-local P_CAN_SOMEONE_DO   = " can someone do "
-local P_CAN_SOMEONE_CREATE = " can someone create "
-local P_CAN_YOU_MAKE     = " can you make "
-local P_CAN_YOU_DO       = " can you do "
-local P_CAN_YOU_CREATE   = " can you create "
-local P_MAKE_ME       = " make me "
-local P_GIVE_ME       = " give me "
-local P_GIMME         = " gimme "
-local P_NEED_PORT     = " need port "
-local P_NEED_PORTAL   = " need portal "
-local P_NEED_A_PORT   = " need a port "
-local P_NEED_A_PORTAL = " need a portal "
-local P_NEED_TP       = " need tp "
-local P_NEED_TELEPORT = " need teleport "
-local P_FOR_ME        = " for me "
-local P_WTB           = " wtb "
-local P_LF            = " lf "
-local P_BUY           = " buy "
-local P_BUYING        = " buying "
-local P_ANY_PORT      = " any port "
-local P_ANY_PORTS     = " any ports "
-local P_ANY_PORTAL    = " any portal "
-local P_ANY_PORTALS   = " any portals "
-local P_PORT_READY    = " port ready "
-local P_PORTS_READY   = " ports ready "
-local P_PORTAL_READY  = " portal ready "
-local P_PORTALS_READY = " portals ready "
-local P_TP_READY      = " tp ready "
-local P_GHETTO        = " ghetto "
-local P_GETTO         = " getto "
-local P_TIPS          = " tips "
+local P_PLS      = " pls "
+local P_PLEASE   = " please "
+local P_PLZ      = " plz "
+local P_POSSIBLE = " possible "
+local P_WTB      = " wtb "
+local P_LF       = " lf "
+local P_BUY      = " buy "
+local P_BUYING   = " buying "
+
+do
+    local P_WTS             = " wts "
+    local P_LFW             = " lfw "
+    local P_PORT            = " port "
+    local P_PORTS           = " ports "
+    local P_PORTAL          = " portal "
+    local P_PORTALS         = " portals "
+    local P_TP              = " tp "
+    local P_TELEPORT        = " teleport "
+    local P_TELEPORTS       = " teleports "
+    local P_TELE            = " tele "
+    local P_PRT             = " prt "
+    local P_PORTLA          = " portla "
+    local P_PPORTAL         = " pportal "
+    local P_PROTAL          = " protal "
+    local P_PPORT           = " pport "
+    local P_MAGEPORT        = " mageport "
+    local P_MAGEPORTS       = " mageports "
+    local P_LFPORT          = " lfport "
+    local P_LFTP            = " lftp "
+    local P_PORT_TO         = " port to "
+    local P_PORTAL_TO       = " portal to "
+    local P_TP_TO           = " tp to "
+    local P_TELEPORT_TO     = " teleport to "
+    local P_TELE_TO         = " tele to "
+    local P_PRT_TO          = " prt to "
+    local P_PORT_ME         = " port me "
+    local P_PORTAL_ME       = " portal me "
+    local P_TP_ME           = " tp me "
+    local P_TELEPORT_ME     = " teleport me "
+    local P_TELE_ME         = " tele me "
+    local P_PLSS            = " plss "
+    local P_PLIS            = " plis "
+    local P_PLEAS           = " pleas "
+    local P_PLZZ            = " plzz "
+    local P_PLOX            = " plox "
+    local P_CAN_I_GET       = " can i get "
+    local P_CAN_I_HAVE      = " can i have "
+    local P_COULD_I_GET     = " could i get "
+    local P_COULD_I_HAVE    = " could i have "
+    local P_WANT_TO_BUY     = " want to buy "
+    local P_LOOKING_FOR     = " looking for "
+    local P_SEEKING         = " seeking "
+    local P_PURCHASING      = " purchasing "
+    local P_CAN_U_PORT      = " can u port "
+    local P_CAN_U_PORTAL    = " can u portal "
+    local P_CAN_U_TP        = " can u tp "
+    local P_CAN_U_TEL       = " can u teleport "
+    local P_CAN_U_MAKE      = " can u make "
+    local P_CAN_U_DO        = " can u do "
+    local P_COULD_U_PORT    = " could u port "
+    local P_COULD_U_PORTAL  = " could u portal "
+    local P_COULD_U_TP      = " could u tp "
+    local P_COULD_U_TEL     = " could u teleport "
+    local P_COULD_U_MAKE    = " could u make "
+    local P_COULD_U_DO      = " could u do "
+    local P_COULD_I_PORT    = " could i port "
+    local P_COULD_I_PORTAL  = " could i portal "
+    local P_COULD_I_TP      = " could i tp "
+    local P_COULD_I_TEL     = " could i teleport "
+    local P_CAN_ANYONE_MAKE = " can anyone make "
+    local P_CAN_ANYONE_DO   = " can anyone do "
+    local P_CAN_ANYONE_CREATE = " can anyone create "
+    local P_CAN_SOMEONE_MAKE = " can someone make "
+    local P_CAN_SOMEONE_DO    = " can someone do "
+    local P_CAN_SOMEONE_CREATE = " can someone create "
+    local P_CAN_YOU_MAKE    = " can you make "
+    local P_CAN_YOU_DO      = " can you do "
+    local P_CAN_YOU_CREATE  = " can you create "
+    local P_MAKE_ME         = " make me "
+    local P_GIVE_ME         = " give me "
+    local P_GIMME           = " gimme "
+    local P_NEED_PORT       = " need port "
+    local P_NEED_PORTAL     = " need portal "
+    local P_NEED_A_PORT     = " need a port "
+    local P_NEED_A_PORTAL   = " need a portal "
+    local P_NEED_TP         = " need tp "
+    local P_NEED_TELEPORT   = " need teleport "
+    local P_FOR_ME          = " for me "
+    local P_ANY_PORT        = " any port "
+    local P_ANY_PORTS       = " any ports "
+    local P_ANY_PORTAL      = " any portal "
+    local P_ANY_PORTALS     = " any portals "
+    local P_PORT_READY      = " port ready "
+    local P_PORTS_READY     = " ports ready "
+    local P_PORTAL_READY    = " portal ready "
+    local P_PORTALS_READY   = " portals ready "
+    local P_TP_READY        = " tp ready "
+    local P_GHETTO          = " ghetto "
+    local P_GETTO           = " getto "
+    local P_TIPS            = " tips "
+
+    PI._matcherPatterns = {
+        blocked = {
+            P_WTS, P_LFW, P_PORT_READY, P_PORTS_READY, P_PORTAL_READY,
+            P_PORTALS_READY, P_TP_READY, P_GHETTO, P_GETTO, P_TIPS,
+        },
+        portalWords = {
+            P_PORT, P_PORTS, P_PORTAL, P_PORTALS, P_TP, P_TELEPORT,
+            P_TELEPORTS, P_TELE, P_PRT, P_PORTLA, P_PPORTAL, P_PROTAL,
+            P_PPORT, P_MAGEPORT, P_MAGEPORTS, P_LFPORT, P_LFTP,
+        },
+        directRequests = {
+            P_PORT_TO, P_PORTAL_TO, P_TP_TO, P_TELEPORT_TO, P_TELE_TO,
+            P_PRT_TO, P_PORT_ME, P_PORTAL_ME, P_TP_ME, P_TELEPORT_ME,
+            P_TELE_ME,
+        },
+        requestIntent = {
+            P_PLS, P_PLSS, P_PLIS, P_PLEAS, P_PLEASE, P_PLZ, P_PLZZ,
+            P_PLOX, P_CAN_I_GET, P_CAN_I_HAVE, P_COULD_I_GET,
+            P_COULD_I_HAVE, P_WANT_TO_BUY, P_LOOKING_FOR, P_SEEKING,
+            P_PURCHASING, P_POSSIBLE, P_CAN_U_PORT, P_CAN_U_PORTAL,
+            P_CAN_U_TP, P_CAN_U_TEL, P_CAN_U_MAKE, P_CAN_U_DO,
+            P_COULD_U_PORT, P_COULD_U_PORTAL, P_COULD_U_TP,
+            P_COULD_U_TEL, P_COULD_U_MAKE, P_COULD_U_DO,
+            P_COULD_I_PORT, P_COULD_I_PORTAL, P_COULD_I_TP,
+            P_COULD_I_TEL, P_CAN_ANYONE_MAKE, P_CAN_ANYONE_DO,
+            P_CAN_ANYONE_CREATE, P_CAN_SOMEONE_MAKE, P_CAN_SOMEONE_DO,
+            P_CAN_SOMEONE_CREATE, P_CAN_YOU_MAKE, P_CAN_YOU_DO,
+            P_CAN_YOU_CREATE, P_MAKE_ME, P_GIVE_ME, P_GIMME, P_FOR_ME,
+            P_NEED_PORT, P_NEED_PORTAL, P_NEED_A_PORT, P_NEED_A_PORTAL,
+            P_NEED_TP, P_NEED_TELEPORT, P_LFPORT, P_LFTP, P_ANY_PORT,
+            P_ANY_PORTS, P_ANY_PORTAL, P_ANY_PORTALS,
+        },
+    }
+end
 
 -- minLevel: the player level at which this portal first becomes trainable.
 -- BuildDestinations skips entries the mage is too low-level to have learned.
@@ -501,39 +538,23 @@ local function NormalizeText(text)
 end
 
 local function HasBlockedIntent(text)
-    return text:find(P_WTS,          1, true) ~= nil
-        or text:find(P_LFW,          1, true) ~= nil
-        or text:find(P_PORT_READY,   1, true) ~= nil
-        or text:find(P_PORTS_READY,  1, true) ~= nil
-        or text:find(P_PORTAL_READY, 1, true) ~= nil
-        or text:find(P_PORTALS_READY,1, true) ~= nil
-        or text:find(P_TP_READY,     1, true) ~= nil
-        or text:find(P_GHETTO,       1, true) ~= nil
-        or text:find(P_GETTO,        1, true) ~= nil
-        or text:find(P_TIPS,         1, true) ~= nil
+    for _, pattern in ipairs(PI._matcherPatterns.blocked) do
+        if text:find(pattern, 1, true) then
+            return true
+        end
+    end
+    return false
 end
 
 local function HasPortalWord(text)
-    return text:find(P_PORT,      1, true) ~= nil
-        or text:find(P_PORTS,     1, true) ~= nil
-        or text:find(P_PORTAL,    1, true) ~= nil
-        or text:find(P_PORTALS,   1, true) ~= nil
-        or text:find(P_TP,        1, true) ~= nil
-        or text:find(P_TELEPORT,  1, true) ~= nil
-        or text:find(P_TELEPORTS, 1, true) ~= nil
-        or text:find(P_TELE,      1, true) ~= nil
-        or text:find(P_PRT,       1, true) ~= nil
-        or text:find(P_PORTLA,    1, true) ~= nil
-        or text:find(P_PPORTAL,   1, true) ~= nil
-        or text:find(P_PROTAL,    1, true) ~= nil
-        or text:find(P_PPORT,     1, true) ~= nil
-        or text:find(P_MAGEPORT,  1, true) ~= nil
-        or text:find(P_MAGEPORTS, 1, true) ~= nil
-        or text:find(P_LFPORT,    1, true) ~= nil
-        or text:find(P_LFTP,      1, true) ~= nil
-        -- Catch double-letter typos like "portall", "portalls" that miss the
-        -- exact checks above. Matches any word starting with "port" + more letters.
-        or text:find(" port%a+ ") ~= nil
+    for _, pattern in ipairs(PI._matcherPatterns.portalWords) do
+        if text:find(pattern, 1, true) then
+            return true
+        end
+    end
+    -- Catch double-letter typos like "portall", "portalls" that miss the
+    -- exact checks above. Matches any word starting with "port" + more letters.
+    return text:find(" port%a+ ") ~= nil
 end
 
 local function IsSoftRequestContext(event)
@@ -565,79 +586,16 @@ local function HasDirectPortalRequest(paddedText, hasPortal)
         return false
     end
 
-    if paddedText:find(P_PORT_TO,      1, true)
-        or paddedText:find(P_PORTAL_TO,    1, true)
-        or paddedText:find(P_TP_TO,        1, true)
-        or paddedText:find(P_TELEPORT_TO,  1, true)
-        or paddedText:find(P_TELE_TO,      1, true)
-        or paddedText:find(P_PRT_TO,       1, true)
-        or paddedText:find(P_PORT_ME,      1, true)
-        or paddedText:find(P_PORTAL_ME,    1, true)
-        or paddedText:find(P_TP_ME,        1, true)
-        or paddedText:find(P_TELEPORT_ME,  1, true)
-        or paddedText:find(P_TELE_ME,      1, true) then
-        return true
+    for _, pattern in ipairs(PI._matcherPatterns.directRequests) do
+        if paddedText:find(pattern, 1, true) then
+            return true
+        end
     end
 
-    if paddedText:find(P_PLS,            1, true)
-        or paddedText:find(P_PLSS,           1, true)
-        or paddedText:find(P_PLIS,           1, true)
-        or paddedText:find(P_PLEAS,          1, true)
-        or paddedText:find(P_PLEASE,         1, true)
-        or paddedText:find(P_PLZ,            1, true)
-        or paddedText:find(P_PLZZ,           1, true)
-        or paddedText:find(P_PLOX,           1, true)
-        or paddedText:find(P_CAN_I_GET,      1, true)
-        or paddedText:find(P_CAN_I_HAVE,     1, true)
-        or paddedText:find(P_COULD_I_GET,    1, true)
-        or paddedText:find(P_COULD_I_HAVE,   1, true)
-        or paddedText:find(P_WANT_TO_BUY,    1, true)
-        or paddedText:find(P_LOOKING_FOR,    1, true)
-        or paddedText:find(P_SEEKING,        1, true)
-        or paddedText:find(P_PURCHASING,     1, true)
-        or paddedText:find(P_POSSIBLE,       1, true)
-        or paddedText:find(P_CAN_U_PORT,     1, true)
-        or paddedText:find(P_CAN_U_PORTAL,   1, true)
-        or paddedText:find(P_CAN_U_TP,       1, true)
-        or paddedText:find(P_CAN_U_TEL,      1, true)
-        or paddedText:find(P_CAN_U_MAKE,     1, true)
-        or paddedText:find(P_CAN_U_DO,       1, true)
-        or paddedText:find(P_COULD_U_PORT,   1, true)
-        or paddedText:find(P_COULD_U_PORTAL, 1, true)
-        or paddedText:find(P_COULD_U_TP,     1, true)
-        or paddedText:find(P_COULD_U_TEL,    1, true)
-        or paddedText:find(P_COULD_U_MAKE,   1, true)
-        or paddedText:find(P_COULD_U_DO,     1, true)
-        or paddedText:find(P_COULD_I_PORT,   1, true)
-        or paddedText:find(P_COULD_I_PORTAL, 1, true)
-        or paddedText:find(P_COULD_I_TP,     1, true)
-        or paddedText:find(P_COULD_I_TEL,    1, true)
-        or paddedText:find(P_CAN_ANYONE_MAKE, 1, true)
-        or paddedText:find(P_CAN_ANYONE_DO,   1, true)
-        or paddedText:find(P_CAN_ANYONE_CREATE, 1, true)
-        or paddedText:find(P_CAN_SOMEONE_MAKE, 1, true)
-        or paddedText:find(P_CAN_SOMEONE_DO,   1, true)
-        or paddedText:find(P_CAN_SOMEONE_CREATE, 1, true)
-        or paddedText:find(P_CAN_YOU_MAKE,     1, true)
-        or paddedText:find(P_CAN_YOU_DO,       1, true)
-        or paddedText:find(P_CAN_YOU_CREATE,   1, true)
-        or paddedText:find(P_MAKE_ME,        1, true)
-        or paddedText:find(P_GIVE_ME,        1, true)
-        or paddedText:find(P_GIMME,          1, true)
-        or paddedText:find(P_FOR_ME,         1, true)
-        or paddedText:find(P_NEED_PORT,      1, true)
-        or paddedText:find(P_NEED_PORTAL,    1, true)
-        or paddedText:find(P_NEED_A_PORT,    1, true)
-        or paddedText:find(P_NEED_A_PORTAL,  1, true)
-        or paddedText:find(P_NEED_TP,        1, true)
-        or paddedText:find(P_NEED_TELEPORT,  1, true)
-        or paddedText:find(P_LFPORT,         1, true)
-        or paddedText:find(P_LFTP,           1, true)
-        or paddedText:find(P_ANY_PORT,       1, true)
-        or paddedText:find(P_ANY_PORTS,      1, true)
-        or paddedText:find(P_ANY_PORTAL,     1, true)
-        or paddedText:find(P_ANY_PORTALS,    1, true) then
-        return true
+    for _, pattern in ipairs(PI._matcherPatterns.requestIntent) do
+        if paddedText:find(pattern, 1, true) then
+            return true
+        end
     end
 
     return false

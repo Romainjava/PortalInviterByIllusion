@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1
+
+- Fixed addon startup on Classic Lua by reducing matcher upvalues.
+- Restored slash commands and minimap button initialization.
+
 ## 1.0.0
 
 - Rebranded the fork as Portal Inviter by Illusion.
