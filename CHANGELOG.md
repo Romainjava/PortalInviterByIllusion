@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.2
+
+- Simplified the README while keeping the addon behavior, options, and commands documented.
+- Added clearer fork attribution, original project link, and license note for distribution review.
+
 ## 1.1.1
 
 - Fixed addon startup on Classic Lua by reducing matcher upvalues.
