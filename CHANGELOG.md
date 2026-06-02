@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.3
+
+- Accepted portal requests from all chat channels instead of only General for channel chat.
+- Added regression coverage for `wtb portal to shatt`, `lf mage port stonard`, and channel support checks.
+
 ## 1.1.2
 
 - Simplified the README while keeping the addon behavior, options, and commands documented.

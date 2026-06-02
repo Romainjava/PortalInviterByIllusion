@@ -1260,27 +1260,7 @@ local function ToggleAutoMode()
 end
 
 local function IsSupportedChannel(channelName, channelNumber, channelBaseName)
-    local numericChannel = tonumber(channelNumber)
-    if numericChannel == 1 then
-        return true
-    end
-
-    local base = string.lower(tostring(channelBaseName or ""))
-    if base:find("general", 1, true) then
-        return true
-    end
-
-    local full = string.lower(tostring(channelName or ""))
-    if full:find("general", 1, true) then
-        return true
-    end
-
-    local extractedNum = full:match("^(%d+)%.")
-    if tonumber(extractedNum) == 1 then
-        return true
-    end
-
-    return false
+    return true
 end
 
 local function ResolveInviteTarget(event, sender, ...)
@@ -1828,6 +1808,7 @@ PI.recentPortalsByPlayer        = recentPortalsByPlayer
 PI.PORTAL_CORRELATION_TTL_SECONDS = PORTAL_CORRELATION_TTL_SECONDS
 PI.ExplainMessageMatch          = ExplainMessageMatch
 PI.EvaluateMessage              = EvaluateMessage
+PI.IsSupportedChannel           = IsSupportedChannel
 PI.SetEnabled                   = SetEnabled
 PI.ToggleEnabled                = ToggleEnabled
 PI.SetAutoMode                  = SetAutoMode

@@ -13,7 +13,7 @@ What it does:
 
 How it works:
 1. Enable the addon with `/port on`.
-2. The addon listens to Say, Yell, General, Whisper, and Battle.net Whisper.
+2. The addon listens to Say, Yell, all chat channels, Whisper, and Battle.net Whisper.
 3. When a message looks like a portal request, it invites the player.
 4. When the player joins, the addon can help you identify the destination and continue the portal workflow.
 

@@ -1,6 +1,7 @@
 PortalInviterByIllusionTestMessages = {
     -- Alliance destinations
     { message = "wtb port to shat", shouldMatch = true, destination = "Shattrath" },
+    { message = "wtb portal to shatt", shouldMatch = true, destination = "Shattrath" },
     { message = "WTB port shat", shouldMatch = true, destination = "Shattrath" },
     { message = "wtb port shat pls", shouldMatch = true, destination = "Shattrath" },
     { message = "LF port SW", shouldMatch = true, destination = "Stormwind" },
@@ -18,6 +19,7 @@ PortalInviterByIllusionTestMessages = {
     -- Horde destinations (only pass when playing as Horde)
     { message = "wtb port to org", shouldMatch = true, destination = "Orgrimmar" },
     { message = "lf port orgrimmar pls", shouldMatch = true, destination = "Orgrimmar" },
+    { message = "lf mage port stonard", shouldMatch = true, destination = "Stonard" },
     { message = "need portal to uc", shouldMatch = true, destination = "Undercity" },
     { message = "possible tele uc", shouldMatch = true, destination = "Undercity" },
     { message = "wtb port tb pls", shouldMatch = true, destination = "Thunder Bluff" },
@@ -80,4 +82,13 @@ PortalInviterByIllusionTestMessages = {
     -- Double-letter portal-keyword typos (e.g. "portall")
     { message = "wtb portall shattrat", shouldMatch = true, destination = "Shattrath" },
     { message = "wtb portalls sw", shouldMatch = true, destination = "Stormwind" },
+}
+
+PortalInviterByIllusionChannelTests = {
+    { label = "General by number", shouldMatch = true, channelNumber = 1, channelName = "1. General - Stormwind", channelBaseName = "General - Stormwind" },
+    { label = "Trade by number", shouldMatch = true, channelNumber = 2, channelName = "2. Trade - City", channelBaseName = "Trade - City" },
+    { label = "LocalDefense", shouldMatch = true, channelNumber = 3, channelName = "3. LocalDefense - Stormwind", channelBaseName = "LocalDefense - Stormwind" },
+    { label = "LookingForGroup", shouldMatch = true, channelNumber = 4, channelName = "4. LookingForGroup", channelBaseName = "LookingForGroup" },
+    { label = "Services", shouldMatch = true, channelNumber = 5, channelName = "5. Services", channelBaseName = "Services" },
+    { label = "Custom world channel", shouldMatch = true, channelNumber = 6, channelName = "6. world", channelBaseName = "world" },
 }

@@ -61,7 +61,28 @@ local function RunSelfTest()
         end
     end
 
-    Print(string.format("Self-test complete: %d/%d passed.", passCount, #PortalInviterByIllusionTestMessages))
+    if type(PortalInviterByIllusionChannelTests) == "table" and PI.IsSupportedChannel then
+        for index, testCase in ipairs(PortalInviterByIllusionChannelTests) do
+            local didMatch = PI.IsSupportedChannel(testCase.channelName, testCase.channelNumber, testCase.channelBaseName)
+            if didMatch == testCase.shouldMatch then
+                passCount = passCount + 1
+            else
+                Print(string.format(
+                    "Channel test %d failed: %s => supported=%s",
+                    index,
+                    testCase.label or "?",
+                    didMatch and "true" or "false"
+                ))
+            end
+        end
+    end
+
+    local totalCount = #PortalInviterByIllusionTestMessages
+    if type(PortalInviterByIllusionChannelTests) == "table" then
+        totalCount = totalCount + #PortalInviterByIllusionChannelTests
+    end
+
+    Print(string.format("Self-test complete: %d/%d passed.", passCount, totalCount))
 end
 
 -- Seeds a handful of fake queue tickets so the queue UI (and its cast buttons)
