@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.4
+
+- Added CurseForge packaging metadata with an explicit `PortalInviterByIllusion` package target.
+- Excluded the legacy `PortalInviter.toc` from packaged builds so CurseForge sees a single addon TOC.
+
 ## 1.1.3
 
 - Accepted portal requests from all chat channels instead of only General for channel chat.

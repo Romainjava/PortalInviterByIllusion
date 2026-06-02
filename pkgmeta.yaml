@@ -1,0 +1,13 @@
+package-as: PortalInviterByIllusion
+
+ignore:
+  - .git
+  - .gitignore
+  - .github
+  - README.md
+  - CHANGELOG.md
+  - LICENSE
+  - PortalInviter.toc
+  - pkgmeta.yaml
+
+license-output: LICENSE
