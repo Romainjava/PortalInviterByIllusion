@@ -18,6 +18,7 @@ PortalInviterByIllusionTestMessages = {
     { message = "Shatrath portal please <3", shouldMatch = true, destination = "Shattrath" },
     -- Horde destinations (only pass when playing as Horde)
     { message = "wtb port to org", shouldMatch = true, destination = "Orgrimmar" },
+    { message = "WTB PORT UC", shouldMatch = true, destination = "Undercity" },
     { message = "lf port orgrimmar pls", shouldMatch = true, destination = "Orgrimmar" },
     { message = "lf mage port stonard", shouldMatch = true, destination = "Stonard" },
     { message = "need portal to uc", shouldMatch = true, destination = "Undercity" },

@@ -291,7 +291,7 @@ local NEUTRAL_DESTINATIONS = {
 
 local function BuildDestinations()
     local factionDestinations = ALLIANCE_DESTINATIONS
-    local _, _, _, factionGroup = UnitFactionGroup("player")
+    local _, factionGroup = UnitFactionGroup("player")
     if factionGroup == "Horde" then
         factionDestinations = HORDE_DESTINATIONS
     end

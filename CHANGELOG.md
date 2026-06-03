@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.5
+
+- Fixed Horde destination loading by reading `UnitFactionGroup("player")` correctly instead of pulling a nil faction value from the wrong return slot.
+- Restored shorthand Horde requests like `WTB PORT UC` so they resolve to `Undercity` instead of falling back to the missing-destination whisper.
+- Added matcher coverage for the uppercase `WTB PORT UC` regression so future request-filter changes keep Undercity aliases working on Horde mages.
+
 ## 1.1.4
 
 - Added CurseForge packaging metadata with an explicit `PortalInviterByIllusion` package target.
