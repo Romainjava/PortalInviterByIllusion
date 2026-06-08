@@ -2,7 +2,7 @@
 ## Title: Portal Inviter by Illusion
 ## Notes: Friendly Mage portal assistant forked from PortalInviter.
 ## Author: Illusion aka Romainjava; original by m1kas
-## Version: 1.1.4
+## Version: 1.1.6
 ## SavedVariables: PortalInviterByIllusionDB, PortalInviterDB
 
 testmessages.lua

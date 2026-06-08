@@ -19,8 +19,10 @@ PortalInviterByIllusionTestMessages = {
     -- Horde destinations (only pass when playing as Horde)
     { message = "wtb port to org", shouldMatch = true, destination = "Orgrimmar" },
     { message = "WTB PORT UC", shouldMatch = true, destination = "Undercity" },
+    { message = "WTB portal to UC from ogrim", shouldMatch = true, destination = "Undercity" },
     { message = "lf port orgrimmar pls", shouldMatch = true, destination = "Orgrimmar" },
     { message = "lf mage port stonard", shouldMatch = true, destination = "Stonard" },
+    { message = "LF stonard tp plz", shouldMatch = true, destination = "Stonard" },
     { message = "need portal to uc", shouldMatch = true, destination = "Undercity" },
     { message = "possible tele uc", shouldMatch = true, destination = "Undercity" },
     { message = "wtb port tb pls", shouldMatch = true, destination = "Thunder Bluff" },
@@ -29,6 +31,9 @@ PortalInviterByIllusionTestMessages = {
     { message = "looking for protal sm", shouldMatch = true, destination = "Silvermoon" },
     { message = "need port to stonard", shouldMatch = true, destination = "Stonard" },
     { message = "can you make og portal", shouldMatch = true, destination = "Orgrimmar" },
+    { message = "wtb portal fossoyeuse", shouldMatch = true, destination = "Undercity" },
+    { message = "lf port pierreche", shouldMatch = true, destination = "Stonard" },
+    { message = "need portal pitons du tonnerre", shouldMatch = true, destination = "Thunder Bluff" },
     -- Bare "portal <destination>" requests (no request-intent word needed)
     { message = "portal shatrak",  shouldMatch = true, destination = "Shattrath" },
     { message = "portal sw",        shouldMatch = true, destination = "Stormwind" },

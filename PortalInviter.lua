@@ -23,8 +23,9 @@ local canInviteCached = true      -- cached CanInviteFromCurrentGroup; refreshed
 -- Resolve the invite API once at load so the hot path avoids a global + subtable
 -- lookup per matched message.
 local InviteUnitFn = (C_PartyInfo and C_PartyInfo.InviteUnit) or InviteUnit
-local cachedAliasMap   -- [word_alias]          = destination_label
-local cachedBigramMap  -- ["word1 word2" alias]  = destination_label
+local cachedAliasMap       -- [word_alias] = destination_label
+local cachedPhraseMap      -- ["multi word alias"] = destination_label
+local cachedMaxAliasWords  -- longest alias length in words
 local levenPrev = {}   -- reused row buffer for LevenshteinDistance
 local levenCurr = {}   -- reused row buffer for LevenshteinDistance
 local normalizeOut = {} -- reused output buffer for NormalizeText
@@ -270,8 +271,8 @@ end
 -- minLevel: the player level at which this portal first becomes trainable.
 -- BuildDestinations skips entries the mage is too low-level to have learned.
 local ALLIANCE_DESTINATIONS = {
-    { label = "Stormwind",     minLevel = 40, aliases = { "stormwind", "storm wind", "stormwnd", "stormwin", "stormwid", "stromwind", "stormwindd", "stormwing", "stomrwind", "storwmind", "strom", "storm", "sw", "swc" } },
-    { label = "Ironforge",     minLevel = 40, aliases = { "ironforge", "iron forge", "ironfroge", "ironfrge", "ironforg", "irnforge", "irongorge", "ironfoge", "ironforeg", "ironf", "iron", "iforge", "if" } },
+    { label = "Stormwind",     minLevel = 40, aliases = { "stormwind", "storm wind", "stormwnd", "stormwin", "stormwid", "stromwind", "stormwindd", "stormwing", "stomrwind", "storwmind", "strom", "storm", "sw", "swc", "hurlevent" } },
+    { label = "Ironforge",     minLevel = 40, aliases = { "ironforge", "iron forge", "ironfroge", "ironfrge", "ironforg", "irnforge", "irongorge", "ironfoge", "ironforeg", "ironf", "iron", "iforge", "if", "forgefer", "forge fer" } },
     { label = "Darnassus",     minLevel = 40, aliases = { "darnassus", "darnasus", "darnassuss", "daranssus", "darnasuss", "darnasuus", "darnass", "darnas", "darna", "darny", "darn" } },
     { label = "Exodar",        minLevel = 65, aliases = { "exodar", "eoxdar", "exodra", "exoda", "exodr", "exoar", "exidor", "elxidor", "theexodar", "exod", "exd", "exo" } },
     { label = "Theramore",     minLevel = 35, aliases = { "theramore", "theramor", "theramre", "theramroe", "therramore", "theremor", "theramoor", "thera more", "theramore isle", "theram", "thera", "tmore" } },
@@ -279,19 +280,27 @@ local ALLIANCE_DESTINATIONS = {
 
 local HORDE_DESTINATIONS = {
     { label = "Orgrimmar",     minLevel = 40, aliases = { "orgrimmar", "ogrimar", "ogrimmar", "orgrimmer", "origrimmar", "orgimar", "orgrimar", "orgimmar", "orgrimm", "ogrim", "orgrim", "orgr", "orgri", "orgim", "org", "ogr", "og" } },
-    { label = "Undercity",     minLevel = 40, aliases = { "undercity", "under city", "undercty", "undrecity", "underciy", "undecity", "undrcity", "udnercity", "undecty", "underc", "under", "uc" } },
-    { label = "Thunder Bluff", minLevel = 40, aliases = { "thunder bluff", "thunderbluff", "thunderbluf", "thundr bluff", "thudner bluff", "tunderbluff", "thunderblf", "thunderb", "thunder", "thundr", "tbluff", "tbluf", "tb" } },
-    { label = "Silvermoon",    minLevel = 65, aliases = { "silvermoon", "silver moon", "silvermun", "silvremoon", "silvermoo", "silvrmoon", "slivermoon", "silvemoon", "silverm", "smoon", "silver", "silv", "sm" } },
-    { label = "Stonard",       minLevel = 35, aliases = { "stonard", "stonnard", "stonar", "stonnrd", "stoneard", "stonrd", "stonaard", "stona", "stond", "ston" } },
+    { label = "Undercity",     minLevel = 40, aliases = { "undercity", "under city", "undercty", "undrecity", "underciy", "undecity", "undrcity", "udnercity", "undecty", "underc", "under", "uc", "fossoyeuse" } },
+    { label = "Thunder Bluff", minLevel = 40, aliases = { "thunder bluff", "thunderbluff", "thunderbluf", "thundr bluff", "thudner bluff", "tunderbluff", "thunderblf", "thunderb", "thunder", "thundr", "tbluff", "tbluf", "tb", "pitons du tonnerre", "pitons tonnerre", "pdt" } },
+    { label = "Silvermoon",    minLevel = 65, aliases = { "silvermoon", "silver moon", "silvermun", "silvremoon", "silvermoo", "silvrmoon", "slivermoon", "silvemoon", "silverm", "smoon", "silver", "silv", "sm", "lune d argent", "lune dargent", "lunedargent" } },
+    { label = "Stonard",       minLevel = 35, aliases = { "stonard", "stonnard", "stonar", "stonnrd", "stoneard", "stonrd", "stonaard", "stona", "stond", "ston", "pierreche" } },
 }
 
 local NEUTRAL_DESTINATIONS = {
     { label = "Shattrath",     minLevel = 65, aliases = { "shattrath", "shatrath", "shatrah", "shatra", "shatrrath", "shattath", "shatttrath", "shattarath", "shattrak", "shatrak", "shatrth", "shatrt", "shatr", "shath", "shatt", "shattr", "shat" } },
 }
 
+local function CountWords(text)
+    local count = 0
+    for _ in text:gmatch("%S+") do
+        count = count + 1
+    end
+    return count
+end
+
 local function BuildDestinations()
     local factionDestinations = ALLIANCE_DESTINATIONS
-    local _, factionGroup = UnitFactionGroup("player")
+    local factionGroup = UnitFactionGroup("player")
     if factionGroup == "Horde" then
         factionDestinations = HORDE_DESTINATIONS
     end
@@ -311,20 +320,26 @@ local function BuildDestinations()
     end
 
     -- Build O(1) lookup maps used by FindDestination.
-    -- Single-word aliases go into aliasMap; space-containing aliases into bigramMap.
-    local aliasMap  = {}
-    local bigramMap = {}
+    -- Single-word aliases go into aliasMap; longer aliases into phraseMap.
+    local aliasMap = {}
+    local phraseMap = {}
+    local maxAliasWords = 1
     for _, d in ipairs(result) do
         for _, alias in ipairs(d.aliases) do
-            if alias:find(" ", 1, true) then
-                bigramMap[alias] = d.label
+            local aliasWordCount = CountWords(alias)
+            if aliasWordCount > 1 then
+                phraseMap[alias] = d.label
             else
                 aliasMap[alias] = d.label
             end
+            if aliasWordCount > maxAliasWords then
+                maxAliasWords = aliasWordCount
+            end
         end
     end
-    cachedAliasMap  = aliasMap
-    cachedBigramMap = bigramMap
+    cachedAliasMap = aliasMap
+    cachedPhraseMap = phraseMap
+    cachedMaxAliasWords = maxAliasWords
 
     return result
 end
@@ -569,7 +584,7 @@ local function IsDestinationOnlyRequest(normalized, paddedText, destination)
     local wordCount = 0
     for _ in normalized:gmatch("%S+") do
         wordCount = wordCount + 1
-        if wordCount > 3 then
+        if wordCount > 4 then
             return false
         end
     end
@@ -666,12 +681,15 @@ local function FuzzyFindDestination(words)
         for _, alias in ipairs(destination.aliases) do
             if #alias >= FUZZY_MIN_ALIAS_LENGTH then
                 local maxDist = FuzzyMaxDistance(#alias)
-                local hasSpace = alias:find(" ", 1, true)
+                local aliasWordCount = CountWords(alias)
 
-                if hasSpace then
-                    for i = 1, #words - 1 do
-                        local pair = words[i] .. " " .. words[i + 1]
-                        local dist = LevenshteinDistance(pair, alias, maxDist)
+                if aliasWordCount > 1 then
+                    for i = 1, #words - aliasWordCount + 1 do
+                        local phrase = words[i]
+                        for j = i + 1, i + aliasWordCount - 1 do
+                            phrase = phrase .. " " .. words[j]
+                        end
+                        local dist = LevenshteinDistance(phrase, alias, maxDist)
                         if dist > 0 and dist <= maxDist and (not bestDistance or dist < bestDistance or (dist == bestDistance and i < bestWordIndex)) then
                             bestDistance = dist
                             bestLabel = destination.label
@@ -710,15 +728,18 @@ local function FindDestination(text)
     end
     for i = wordCount + 1, #words do words[i] = nil end
 
-    -- O(words) hash-map lookup — no iteration over all aliases.
+    -- O(words * maxAliasWords) hash-map lookup with exact alias phrases.
     for i, word in ipairs(words) do
         local label = cachedAliasMap[word]
         if label then
             return label
         end
-        if i < #words then
-            local bigram = word .. " " .. words[i + 1]
-            label = cachedBigramMap[bigram]
+
+        local phrase = word
+        local maxJ = math.min(wordCount, i + (cachedMaxAliasWords or 1) - 1)
+        for j = i + 1, maxJ do
+            phrase = phrase .. " " .. words[j]
+            label = cachedPhraseMap[phrase]
             if label then
                 return label
             end
@@ -753,8 +774,7 @@ local function ExplainMessageMatch(message)
             -- A bare "<portal-keyword> <destination>" message (exactly 2 words) is itself
             -- a request — e.g. "portal shatrak" or "port sw". Longer messages without a
             -- request signal (e.g. "portal trainer is in stormwind") stay rejected.
-            local wordCount = 0
-            for _ in normalized:gmatch("%S+") do wordCount = wordCount + 1 end
+            local wordCount = CountWords(normalized)
             if wordCount ~= 2 then
                 return false, destination, "message mentioned a destination but did not look like a request", normalized
             end
@@ -829,8 +849,7 @@ local function MatchRequestFast(message, event)
     local destination = FindDestination(normalized)
     if not destination then return false end
 
-    local wordCount = 0
-    for _ in normalized:gmatch("%S+") do wordCount = wordCount + 1 end
+    local wordCount = CountWords(normalized)
     if wordCount ~= 2 then return false end
 
     return true, normalized, destination
@@ -1922,7 +1941,8 @@ frame:SetScript("OnEvent", function(_, event, ...)
         -- Invalidate destination cache so newly available portals are included.
         cachedDestinations = nil
         cachedAliasMap     = nil
-        cachedBigramMap    = nil
+        cachedPhraseMap    = nil
+        cachedMaxAliasWords = nil
         -- A new level may grant a new portal rank; refresh the cast-announce
         -- spell name set so its cast is recognized.
         RefreshPortalSpellNames()

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.6
+
+- Restored Horde destination loading by reading the English faction return from `UnitFactionGroup("player")`, so requests like `UC`, `Stonard`, and `TB` no longer fall back to unknown destinations.
+- Added French destination aliases like `Fossoyeuse`, `Pierreche`, `Pitons du Tonnerre`, `Hurlevent`, `Forgefer`, and `Lune d'Argent`.
+- Extended exact and fuzzy destination matching beyond 2-word aliases so multi-word French names resolve correctly.
+- Added regression coverage for mixed phrases like `WTB portal to UC from ogrim`, `LF stonard tp plz`, and French Horde portal requests.
+
 ## 1.1.5
 
 - Fixed Horde destination loading by reading `UnitFactionGroup("player")` correctly instead of pulling a nil faction value from the wrong return slot.
