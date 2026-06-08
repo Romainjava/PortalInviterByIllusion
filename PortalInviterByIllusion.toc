@@ -1,4 +1,4 @@
-## Interface: 11507
+## Interface: 20505
 ## Title: Portal Inviter by Illusion
 ## Notes: Friendly Mage portal assistant forked from PortalInviter.
 ## Author: Illusion aka Romainjava; original by m1kas
